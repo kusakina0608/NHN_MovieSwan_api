@@ -37,6 +37,7 @@
 .idea/jarRepositories.xml
 .idea/modules.xml
 .idea/*.iml
+.idea/vcs.xml
 .idea/modules
 *.iml
 *.ipr
