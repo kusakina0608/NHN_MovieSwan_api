@@ -27,17 +27,6 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/hello")
-    @ResponseBody
-    public User hello() throws IOException {
-
-        User user = new User("asd","asdf","asd","fff","ADSF",
-                LocalDateTime.now(),LocalDateTime.now());
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonStr = objectMapper.writeValueAsString(user);
-        return user; //자동으로 json형식으로 출
-    }
-
     @PostMapping("/register")
     public void register(HttpServletRequest request) {
         String uid = request.getParameter("uid");
@@ -45,7 +34,6 @@ public class UserController {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String url = request.getParameter("url");
-
 
 
         UserDTO userDTO = UserDTO.builder()
