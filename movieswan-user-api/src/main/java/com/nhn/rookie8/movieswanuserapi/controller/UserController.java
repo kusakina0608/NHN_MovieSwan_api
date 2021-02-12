@@ -173,4 +173,37 @@ public class UserController {
 
         return "{\"error\":\"false\",\"errorCode\":,\"message\":\"Check Success\"}";
     }
+
+    @PutMapping("/updatePassword")
+    public String updatePassword(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+
+        if(session == null) {
+            System.out.println("no session");
+            return null;
+        }
+
+        String uid = (String) session.getAttribute("uid");
+
+        String password = request.getParameter("password");
+
+        UserDTO userDTO = userService.getUserInfoById(uid);
+
+        UserDTO result = UserDTO.builder()
+                .uid(userDTO.getUid())
+                .password(password)
+                .name(userDTO.getName())
+                .email(userDTO.getEmail())
+                .url(userDTO.getUrl())
+                .regDate(userDTO.getRegDate())
+                .modDate(LocalDateTime.now())
+                .build();
+
+
+        userService.register(result);
+
+        return "success";
+    }
+
 }
