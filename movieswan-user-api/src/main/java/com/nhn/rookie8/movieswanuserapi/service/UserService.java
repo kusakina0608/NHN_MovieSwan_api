@@ -2,12 +2,16 @@ package com.nhn.rookie8.movieswanuserapi.service;
 
 import com.nhn.rookie8.movieswanuserapi.dto.UserDTO;
 import com.nhn.rookie8.movieswanuserapi.entity.User;
-import com.nhn.rookie8.movieswanuserapi.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public interface UserService {
 
     Long register(UserDTO dto);
+
+    Long update(UserDTO dto);
+
+    UserDTO getUserInfoById(String uid);
+
+    void deleteById(String uid);
 
     default User dtoToEntity(UserDTO dto){
         User entity = User.builder()

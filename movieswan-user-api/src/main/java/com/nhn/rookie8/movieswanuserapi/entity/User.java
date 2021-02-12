@@ -18,19 +18,19 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id
-    @Column(length = 21)
+    @Column(length = 21, nullable = false)
     private String uid;
 
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String password;
 
-    @Column(length = 21)
+    @Column(length = 21, nullable = false)
     private String name;
 
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String email;
 
-    @Column(length = 200)
+    @Column(length = 200, nullable = false)
     private String url;
 
     @CreatedDate
