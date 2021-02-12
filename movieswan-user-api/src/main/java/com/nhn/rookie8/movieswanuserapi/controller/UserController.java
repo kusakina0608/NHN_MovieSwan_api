@@ -72,4 +72,26 @@ public class UserController {
         return "{\"error\":\"false\",\"errorCode\":,\"message\":\"Login Successfully\"}";
     }
 
+    @GetMapping("/getUserInfo")
+    public UserDTO getUserInfo(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+
+        if(session == null) {
+            System.out.println("no session");
+            return null;
+        }
+
+        String uid = (String) session.getAttribute("uid");
+
+        UserDTO userDTO = userService.getUserInfoById(uid);
+        UserDTO result = UserDTO.builder()
+                .uid(userDTO.getUid())
+                .name(userDTO.getName())
+                .email(userDTO.getEmail())
+                .url(userDTO.getUrl())
+                .build();
+
+        return result;
+    }
 }
