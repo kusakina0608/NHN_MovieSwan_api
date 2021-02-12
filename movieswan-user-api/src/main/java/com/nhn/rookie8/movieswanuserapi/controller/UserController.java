@@ -206,4 +206,15 @@ public class UserController {
         return "success";
     }
 
+    @GetMapping("/logout")
+    public void logout(HttpServletRequest request){
+
+        HttpSession session = request.getSession();
+
+        if(session == null) return;
+
+        session.invalidate();
+
+    }
+
 }
