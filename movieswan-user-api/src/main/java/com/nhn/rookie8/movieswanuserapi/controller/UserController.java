@@ -94,4 +94,37 @@ public class UserController {
 
         return result;
     }
+
+    @PutMapping("/updateUserInfo")
+    public String updateUserInfo(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+
+        if(session == null) {
+            System.out.println("no session");
+            return null;
+        }
+
+        String uid = (String) session.getAttribute("uid");
+
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String url = request.getParameter("url");
+
+        UserDTO userDTO = userService.getUserInfoById(uid);
+
+        UserDTO result = UserDTO.builder()
+                .uid(userDTO.getUid())
+                .password(userDTO.getPassword())
+                .name(name)
+                .email(email)
+                .url(url)
+                .regDate(userDTO.getRegDate())
+                .modDate(LocalDateTime.now())
+                .build();
+
+        userService.update(result);
+
+        return "success";
+    }
 }
