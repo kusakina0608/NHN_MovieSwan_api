@@ -146,4 +146,31 @@ public class UserController {
 
         return "success";
     }
+
+    @PostMapping("/checkPassword")
+    public String checkPassword(HttpServletRequest request){
+
+        HttpSession session = request.getSession(false);
+
+        if(session == null) {
+            System.out.println("no session");
+            return null;
+        }
+
+        String uid = (String) session.getAttribute("uid");
+
+        String password = request.getParameter("password");
+
+        UserDTO userDTO = userService.getUserInfoById(uid);
+
+        if(userDTO == null){
+            return null;
+        }
+
+        if(!userDTO.getPassword().equals(password)){
+            return "{\"error\":\"true\",\"errorCode\":2,\"message\":\"Incorrect Password\"}";
+        }
+
+        return "{\"error\":\"false\",\"errorCode\":,\"message\":\"Check Success\"}";
+    }
 }
