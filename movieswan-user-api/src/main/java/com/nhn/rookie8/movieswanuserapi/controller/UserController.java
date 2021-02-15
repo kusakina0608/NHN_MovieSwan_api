@@ -127,4 +127,23 @@ public class UserController {
 
         return "success";
     }
+
+    @DeleteMapping("/deleteUser")
+    public String deleteUser(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+
+        if(session == null) {
+            System.out.println("no session");
+            return null;
+        }
+
+        String uid = request.getParameter("uid");
+
+        userService.deleteById(uid);
+
+        session.invalidate();
+
+        return "success";
+    }
 }
