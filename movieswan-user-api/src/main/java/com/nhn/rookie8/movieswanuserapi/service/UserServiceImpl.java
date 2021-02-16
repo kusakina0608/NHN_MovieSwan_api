@@ -19,14 +19,14 @@ public class UserServiceImpl implements UserService{
     @Override
     public Long register(UserDTO dto){
 
-        log.info("DTO-----------------");
-        log.info(dto);
+        //log.info("DTO-----------------");
+        //log.info(dto);
 
         User entity = dtoToEntity(dto);
 
-        log.info(entity);
+        //log.info(entity);
 
-        System.out.println(entity);
+        //System.out.println(entity);
 
         userRepository.save(entity);
 
