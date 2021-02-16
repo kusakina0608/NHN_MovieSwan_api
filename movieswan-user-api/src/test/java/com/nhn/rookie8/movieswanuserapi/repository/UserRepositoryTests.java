@@ -22,11 +22,11 @@ public class UserRepositoryTests {
     @Test
     public void testInsertDummies(){
 
-        IntStream.rangeClosed(1,100).forEach(i->{
+        IntStream.rangeClosed(1,1000).forEach(i->{
             User user = User
                     .builder()
-                    .uid("uid.." + i)
-                    .password("password.." + i)
+                    .uid("" + i)
+                    .password("" + i)
                     .name("name.." + i)
                     .email("email.." + i)
                     .url("url.." + i)

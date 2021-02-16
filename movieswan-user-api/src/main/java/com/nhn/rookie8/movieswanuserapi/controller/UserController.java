@@ -26,12 +26,29 @@ public class UserController {
     @PostMapping("/register")
     public CommonResponse register(HttpServletRequest request) {
 
+        log.info("/api/register started..........");
+
         String uid = request.getParameter("uid");
         String password = request.getParameter("password");
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String url = request.getParameter("url");
 
+        UserDTO check = userService.getUserInfoById(uid);
+
+        if(check != null){
+            CommonResponse commonResponse = CommonResponse.builder()
+                    .httpCode(400)
+                    .error(false)
+                    .message("Id already exist.")
+                    .build();
+
+            log.info("Id already exist.");
+            log.info("uid : " + uid);
+            log.info("/api/register end..........");
+
+            return commonResponse;
+        }
 
         UserDTO userDTO = UserDTO.builder()
                 .uid(uid)
@@ -51,11 +68,17 @@ public class UserController {
                 .message("Register success.")
                 .build();
 
+        log.info("Register success.");
+        log.info("uid : " + uid);
+        log.info("/api/register end..........");
+
         return commonResponse;
     }
 
     @PostMapping("/login")
     public CommonResponse login(HttpServletRequest request){
+
+        log.info("/api/login start..........");
 
         if(request.getSession(false) != null) {
             CommonResponse commonResponse = CommonResponse.builder()
@@ -63,6 +86,10 @@ public class UserController {
                     .error(true)
                     .message("Already session exist.")
                     .build();
+
+            log.info("Already session exist.");
+            log.info("/api/login end..........");
+
             return commonResponse;
         }
 
@@ -78,6 +105,9 @@ public class UserController {
                     .message("Incorrect ID.")
                     .content(1)
                     .build();
+
+            log.info("Incorrect ID.    uid : " + uid);
+            log.info("/api/login end..........");
             return commonResponse;
         }
 
@@ -88,6 +118,10 @@ public class UserController {
                     .message("Incorrect password.")
                     .content(2)
                     .build();
+
+            log.info("Incorrect password.");
+            log.info("uid : " + uid);
+            log.info("/api/login end..........");
             return commonResponse;
         }
 
@@ -100,6 +134,10 @@ public class UserController {
                 .message("Login Successfully.")
                 .build();
 
+        log.info("Login Successfully.");
+        log.info("uid : " + uid);
+        log.info("/api/login end..........");
+
         return commonResponse;
 
     }
@@ -107,16 +145,20 @@ public class UserController {
     @GetMapping("/getUserInfo")
     public CommonResponse getUserInfo(HttpServletRequest request) {
 
+        log.info("/api/getUserInfo start..........");
+
         HttpSession session = request.getSession(false);
 
         if(session == null) {
-            System.out.println("no session");
 
             CommonResponse commonResponse = CommonResponse.builder()
                     .httpCode(401)
                     .error(true)
                     .message("Login required.")
                     .build();
+
+            log.info("Login required.");
+            log.info("/api/getUserInfo end..........");
 
             return commonResponse;
         }
@@ -138,11 +180,17 @@ public class UserController {
                 .content(result)
                 .build();
 
+        log.info("success.");
+        log.info("uid : " + uid);
+        log.info("/api/getUserInfo end..........");
+
         return commonResponse;
     }
 
     @PutMapping("/updateUserInfo")
     public CommonResponse updateUserInfo(HttpServletRequest request) {
+
+        log.info("/api/updateUserInfo start..........");
 
         HttpSession session = request.getSession(false);
 
@@ -154,6 +202,8 @@ public class UserController {
                     .message("Login required.")
                     .build();
 
+            log.info("Login required.");
+            log.info("/api/updateUserInfo end..........");
             return commonResponse;
         }
 
@@ -183,11 +233,17 @@ public class UserController {
                 .message("Update success.")
                 .build();
 
+        log.info("Update success.");
+        log.info("uid : " + uid);
+        log.info("/api/updateUserInfo end..........");
+
         return commonResponse;
     }
 
     @DeleteMapping("/deleteUser")
     public CommonResponse deleteUser(HttpServletRequest request) {
+
+        log.info("/api/deleteUser start..........");
 
         HttpSession session = request.getSession(false);
 
@@ -198,6 +254,9 @@ public class UserController {
                     .error(true)
                     .message("Login required.")
                     .build();
+
+            log.info("Login required.");
+            log.info("/api/deleteUser end..........");
 
             return commonResponse;
         }
@@ -215,12 +274,18 @@ public class UserController {
                 .message("Delete success.")
                 .build();
 
+        log.info("Delete success.");
+        log.info("uid : " + uid);
+        log.info("/api/deleteUser end..........");
+
         return commonResponse;
 
     }
 
     @PostMapping("/checkPassword")
     public CommonResponse checkPassword(HttpServletRequest request){
+
+        log.info("/api/checkPassword start..........");
 
         HttpSession session = request.getSession(false);
 
@@ -231,6 +296,9 @@ public class UserController {
                     .error(true)
                     .message("Login required.")
                     .build();
+
+            log.info("Login required");
+            log.info("/api/checkPassword end..........");
 
             return commonResponse;
         }
@@ -248,6 +316,9 @@ public class UserController {
                     .message("Unexpected error.")
                     .build();
 
+            log.info("Unexpected error");
+            log.info("/api/checkPassword end..........");
+
             return commonResponse;
         }
 
@@ -260,6 +331,10 @@ public class UserController {
                     .content(2)
                     .build();
 
+            log.info("Incorrect password.");
+            log.info("uid : " + uid);
+            log.info("/api/checkPassword end..........");
+
             return commonResponse;
         }
 
@@ -269,12 +344,18 @@ public class UserController {
                 .message("Check Success.")
                 .build();
 
+        log.info("Check Success.");
+        log.info("uid : " + uid);
+        log.info("/api/checkPassword end..........");
+
         return commonResponse;
 
     }
 
     @PutMapping("/updatePassword")
     public CommonResponse updatePassword(HttpServletRequest request) {
+
+        log.info("/api/updatePassword start..........");
 
         HttpSession session = request.getSession(false);
 
@@ -285,6 +366,9 @@ public class UserController {
                     .error(true)
                     .message("Login required.")
                     .build();
+
+            log.info("Login required.");
+            log.info("/api/updatePassword end..........");
 
             return commonResponse;
         }
@@ -314,11 +398,17 @@ public class UserController {
                 .message("Update password success.")
                 .build();
 
+        log.info("Update password success.");
+        log.info("uid : " + uid);
+        log.info("/api/updatePassword end..........");
+
         return commonResponse;
     }
 
     @GetMapping("/logout")
     public CommonResponse logout(HttpServletRequest request){
+
+        log.info("/api/logout start..........");
 
         HttpSession session = request.getSession();
 
@@ -329,6 +419,9 @@ public class UserController {
                     .error(true)
                     .message("Login required.")
                     .build();
+
+            log.info("Login required.");
+            log.info("/api/logout end..........");
 
             return commonResponse;
         }
@@ -341,12 +434,17 @@ public class UserController {
                 .message("Logout success.")
                 .build();
 
+        log.info("Logout success");
+        log.info("/api/logout end..........");
+
         return commonResponse;
 
     }
 
     @PostMapping("/isLoggedIn")
     public CommonResponse isLoggedIn(HttpServletRequest request){
+
+        log.info("/api/isLoggedIn start..........");
 
         HttpSession session = request.getSession();
 
@@ -357,6 +455,9 @@ public class UserController {
                     .error(true)
                     .message("Login required.")
                     .build();
+
+            log.info("Login required");
+            log.info("/api/isLoggedIn end..........");
 
             return commonResponse;
         }
@@ -373,6 +474,10 @@ public class UserController {
                 .message("Session exist")
                 .content(result)
                 .build();
+
+        log.info("Session exist");
+        log.info("uid : " + uid);
+        log.info("/api/isLoggedIn end..........");
 
         return commonResponse;
 
