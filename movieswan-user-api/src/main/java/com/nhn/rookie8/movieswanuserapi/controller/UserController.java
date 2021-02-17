@@ -17,6 +17,7 @@ import java.util.regex.*;
 
 @RestController
 @Log4j2
+@CrossOrigin(origins = "*")
 @RequestMapping("/api")
 public class UserController {
 
