@@ -125,8 +125,6 @@ public class UserController {
             return commonResponse;
         }
 
-        HttpSession session = request.getSession();
-        session.setAttribute("uid",uid);
 
         CommonResponse commonResponse = CommonResponse.builder()
                 .httpCode(200)
@@ -147,23 +145,7 @@ public class UserController {
 
         log.info("/api/getUserInfo start..........");
 
-        HttpSession session = request.getSession(false);
-
-        if(session == null) {
-
-            CommonResponse commonResponse = CommonResponse.builder()
-                    .httpCode(401)
-                    .error(true)
-                    .message("Login required.")
-                    .build();
-
-            log.info("Login required.");
-            log.info("/api/getUserInfo end..........");
-
-            return commonResponse;
-        }
-
-        String uid = (String) session.getAttribute("uid");
+        String uid = request.getParameter("uid");
 
         UserDTO userDTO = userService.getUserInfoById(uid);
         UserDTO result = UserDTO.builder()
@@ -192,23 +174,8 @@ public class UserController {
 
         log.info("/api/updateUserInfo start..........");
 
-        HttpSession session = request.getSession(false);
 
-        if(session == null) {
-
-            CommonResponse commonResponse = CommonResponse.builder()
-                    .httpCode(401)
-                    .error(true)
-                    .message("Login required.")
-                    .build();
-
-            log.info("Login required.");
-            log.info("/api/updateUserInfo end..........");
-            return commonResponse;
-        }
-
-        String uid = (String) session.getAttribute("uid");
-
+        String uid = request.getParameter("uid");
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String url = request.getParameter("url");
@@ -245,25 +212,8 @@ public class UserController {
 
         log.info("/api/deleteUser start..........");
 
-        HttpSession session = request.getSession(false);
-
-        if(session == null) {
-
-            CommonResponse commonResponse = CommonResponse.builder()
-                    .httpCode(401)
-                    .error(true)
-                    .message("Login required.")
-                    .build();
-
-            log.info("Login required.");
-            log.info("/api/deleteUser end..........");
-
-            return commonResponse;
-        }
 
         String uid = request.getParameter("uid");
-
-        session.invalidate();
 
         userService.deleteById(uid);
 
@@ -287,24 +237,8 @@ public class UserController {
 
         log.info("/api/checkPassword start..........");
 
-        HttpSession session = request.getSession(false);
 
-        if(session == null) {
-
-            CommonResponse commonResponse = CommonResponse.builder()
-                    .httpCode(401)
-                    .error(true)
-                    .message("Login required.")
-                    .build();
-
-            log.info("Login required");
-            log.info("/api/checkPassword end..........");
-
-            return commonResponse;
-        }
-
-        String uid = (String) session.getAttribute("uid");
-
+        String uid = request.getParameter("uid");
         String password = request.getParameter("password");
 
         UserDTO userDTO = userService.getUserInfoById(uid);
@@ -357,24 +291,8 @@ public class UserController {
 
         log.info("/api/updatePassword start..........");
 
-        HttpSession session = request.getSession(false);
 
-        if(session == null) {
-
-            CommonResponse commonResponse = CommonResponse.builder()
-                    .httpCode(401)
-                    .error(true)
-                    .message("Login required.")
-                    .build();
-
-            log.info("Login required.");
-            log.info("/api/updatePassword end..........");
-
-            return commonResponse;
-        }
-
-        String uid = (String) session.getAttribute("uid");
-
+        String uid = request.getParameter("uid");
         String password = request.getParameter("password");
 
         UserDTO userDTO = userService.getUserInfoById(uid);
@@ -405,83 +323,6 @@ public class UserController {
         return commonResponse;
     }
 
-    @GetMapping("/logout")
-    public CommonResponse logout(HttpServletRequest request){
-
-        log.info("/api/logout start..........");
-
-        HttpSession session = request.getSession();
-
-        if(session == null) {
-
-            CommonResponse commonResponse = CommonResponse.builder()
-                    .httpCode(401)
-                    .error(true)
-                    .message("Login required.")
-                    .build();
-
-            log.info("Login required.");
-            log.info("/api/logout end..........");
-
-            return commonResponse;
-        }
-
-        session.invalidate();
-
-        CommonResponse commonResponse = CommonResponse.builder()
-                .httpCode(200)
-                .error(false)
-                .message("Logout success.")
-                .build();
-
-        log.info("Logout success");
-        log.info("/api/logout end..........");
-
-        return commonResponse;
-
-    }
-
-    @PostMapping("/isLoggedIn")
-    public CommonResponse isLoggedIn(HttpServletRequest request){
-
-        log.info("/api/isLoggedIn start..........");
-
-        HttpSession session = request.getSession();
-
-        if(session == null) {
-
-            CommonResponse commonResponse = CommonResponse.builder()
-                    .httpCode(401)
-                    .error(true)
-                    .message("Login required.")
-                    .build();
-
-            log.info("Login required");
-            log.info("/api/isLoggedIn end..........");
-
-            return commonResponse;
-        }
-
-        String uid = (String) session.getAttribute("uid");
-
-        UserDTO result = UserDTO.builder()
-                .uid(uid)
-                .build();
-
-        CommonResponse commonResponse = CommonResponse.builder()
-                .httpCode(200)
-                .error(false)
-                .message("Session exist")
-                .content(result)
-                .build();
-
-        log.info("Session exist");
-        log.info("uid : " + uid);
-        log.info("/api/isLoggedIn end..........");
-
-        return commonResponse;
-
-    }
 
     @GetMapping("/isValidId")
     public CommonResponse isValidId(@RequestParam String uid){
