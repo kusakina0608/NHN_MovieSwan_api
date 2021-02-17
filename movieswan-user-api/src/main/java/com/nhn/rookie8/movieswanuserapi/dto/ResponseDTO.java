@@ -1,4 +1,4 @@
-package com.nhn.rookie8.movieswanuserapi.lib;
+package com.nhn.rookie8.movieswanuserapi.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CommonResponse {
+public class ResponseDTO {
 
     private Integer httpCode;
 
