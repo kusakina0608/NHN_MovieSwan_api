@@ -318,6 +318,17 @@ public class UserController {
 
         }
 
+        if(userService.getUserInfoById(uid)!=null){
+            ResponseDTO responseDTO = ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(false)
+                    .message("Id already exist.")
+                    .build();
+
+            return responseDTO;
+        }
+
+
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .httpCode(400)
                 .error(true)
