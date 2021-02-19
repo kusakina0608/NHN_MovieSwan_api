@@ -302,11 +302,12 @@ public class UserController {
     @GetMapping("/isValidId")
     public ResponseDTO isValidId(@RequestParam String uid){
 
-        //Need to strict
+        System.out.println(userService.getUserInfoById(uid));
+
         Pattern pattern = Pattern.compile("(^[a-z0-9._-]{6,20}$)");
 
         Matcher matcher = pattern.matcher(uid);
-        if(matcher.find()){
+        if(matcher.find() && userService.getUserInfoById(uid) == null){
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .httpCode(200)
                     .error(false)
@@ -316,16 +317,6 @@ public class UserController {
 
             return responseDTO;
 
-        }
-
-        if(userService.getUserInfoById(uid)!=null){
-            ResponseDTO responseDTO = ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(false)
-                    .message("Id already exist.")
-                    .build();
-
-            return responseDTO;
         }
 
 
