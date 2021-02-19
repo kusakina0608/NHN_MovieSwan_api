@@ -130,6 +130,8 @@ public class UserController {
 
         UserDTO userDTO = userService.getUserInfoById(request.getUid());
 
+        userDTO.setPassword(null);
+
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .httpCode(200)
                 .error(false)
@@ -157,6 +159,7 @@ public class UserController {
         userDTO.setName(request.getName());
         userDTO.setEmail(request.getEmail());
         userDTO.setUrl(request.getUrl());
+        userDTO.setModDate(LocalDateTime.now());
 
         userService.update(userDTO);
 
@@ -280,7 +283,7 @@ public class UserController {
         }
 
         userDTO.setPassword(request.getPassword());
-
+        userDTO.setModDate(LocalDateTime.now());
 
         userService.register(userDTO);
 
