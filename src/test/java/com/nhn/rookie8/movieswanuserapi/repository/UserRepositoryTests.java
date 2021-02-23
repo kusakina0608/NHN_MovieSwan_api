@@ -9,18 +9,13 @@ import java.time.LocalDateTime;
 import java.util.stream.IntStream;
 
 @SpringBootTest
-public class UserRepositoryTests {
+class UserRepositoryTests {
 
     @Autowired
     UserRepository userRepository;
 
     @Test
-    public void testClass(){
-        System.out.println(userRepository.getClass().getName());
-    }
-
-    @Test
-    public void testInsertDummies(){
+    void testInsertDummies(){
 
         IntStream.rangeClosed(1,1000).forEach(i->{
             User user = User

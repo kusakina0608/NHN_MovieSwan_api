@@ -4,334 +4,501 @@ package com.nhn.rookie8.movieswanuserapi.controller;
 import com.nhn.rookie8.movieswanuserapi.dto.ResponseDTO;
 import com.nhn.rookie8.movieswanuserapi.dto.UserDTO;
 import com.nhn.rookie8.movieswanuserapi.service.UserService;
+import com.nhn.rookie8.movieswanuserapi.userEnum.ErrorCode;
+import com.nhn.rookie8.movieswanuserapi.userException.AlreadyIdExistException;
+import com.nhn.rookie8.movieswanuserapi.userException.IncorrectPasswordException;
+import com.nhn.rookie8.movieswanuserapi.userException.IncorrectUserException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.regex.*;
 
 
+
+@RequiredArgsConstructor
 @RestController
 @Log4j2
 @CrossOrigin(origins = "*")
 @RequestMapping("/api")
 public class UserController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
-    @ResponseBody
+    private String divideLog = "--------------------------------------------------";
+    private String startMessage = "started..........";
+    private String endMessage = "end..........";
+
+
     @PostMapping("/register")
     public ResponseDTO register(@RequestBody UserDTO request) {
 
-        log.info("--------------------------------------------------");
-        log.info("/api/register started..........");
+        try{
 
-        UserDTO check = userService.getUserInfoById(request.getUid());
+            log.info(divideLog);
+            log.info("/api/register {}",startMessage);
 
-        if(check != null){
-            ResponseDTO responseDTO = ResponseDTO.builder()
-                    .httpCode(400)
+            UserDTO check = userService.getUserInfoById(request.getUid());
+
+            if(check != null){
+                throw new AlreadyIdExistException();
+            }
+
+            request.setRegDate(LocalDateTime.now());
+            request.setModDate(LocalDateTime.now());
+
+            userService.register(request);
+            log.info(ErrorCode.NO_ERROR.getMessage());
+
+            return ResponseDTO.builder()
+                    .httpCode(200)
                     .error(false)
-                    .message("Id already exist.")
+                    .errorCode(ErrorCode.NO_ERROR.ordinal())
+                    .message(ErrorCode.NO_ERROR.getMessage())
                     .build();
 
-            log.info("Id already exist.");
-            log.info("uid : " + request.getUid());
-            log.info("/api/register end..........");
-            log.info("--------------------------------------------------");
-
-            return responseDTO;
         }
+        catch (AlreadyIdExistException e){
 
-        request.setRegDate(LocalDateTime.now());
-        request.setModDate(LocalDateTime.now());
+            log.info(ErrorCode.ALREADY_ID_EXIST.getMessage());
 
-        userService.register(request);
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.ALREADY_ID_EXIST.ordinal())
+                    .message(ErrorCode.ALREADY_ID_EXIST.getMessage())
+                    .build();
+        }
+        catch (Exception e){
 
-        ResponseDTO responseDTO = ResponseDTO.builder()
-                .httpCode(200)
-                .error(false)
-                .message("Register success.")
-                .build();
+            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
 
-        log.info("Register success.");
-        log.info("uid : " + request.getUid());
-        log.info("/api/register end..........");
-        log.info("--------------------------------------------------");
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
+                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
+                    .build();
 
-        return responseDTO;
+        }
+        finally {
+
+            log.info("uid : {}", request.getUid());
+            log.info("/api/register {}",endMessage);
+            log.info(divideLog);
+
+        }
     }
 
-    @ResponseBody
+
     @PostMapping("/login")
     public ResponseDTO login(@RequestBody UserDTO request){
 
-        log.info("--------------------------------------------------");
-        log.info("/api/login start..........");
+        try{
 
-        UserDTO userDTO = userService.getUserInfoById(request.getUid());
+            log.info(divideLog);
+            log.info("/api/login {}",startMessage);
+            UserDTO userDTO = userService.getUserInfoById(request.getUid());
 
-        if(userDTO == null){
-            ResponseDTO responseDTO = ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .message("Incorrect ID.")
-                    .content(1)
+            if(userDTO == null){
+                throw new IncorrectUserException();
+            }
+
+            if(!userDTO.getPassword().equals(request.getPassword())){
+                throw new IncorrectPasswordException();
+            }
+
+            log.info(ErrorCode.NO_ERROR.getMessage());
+
+            return ResponseDTO.builder()
+                    .httpCode(200)
+                    .error(false)
+                    .errorCode(ErrorCode.NO_ERROR.ordinal())
+                    .message(ErrorCode.NO_ERROR.getMessage())
                     .build();
 
-            log.info("Incorrect ID.    uid : " + request.getUid());
-            log.info("/api/login end..........");
-            log.info("--------------------------------------------------");
-
-            return responseDTO;
         }
+        catch (IncorrectUserException e){
 
-        if(!userDTO.getPassword().equals(request.getPassword())){
-            ResponseDTO responseDTO = ResponseDTO.builder()
+            log.info(ErrorCode.INCORRECT_USER.getMessage());
+
+            return ResponseDTO.builder()
                     .httpCode(400)
                     .error(true)
-                    .message("Incorrect password.")
-                    .content(2)
+                    .errorCode(ErrorCode.INCORRECT_USER.ordinal())
+                    .message(ErrorCode.INCORRECT_USER.getMessage())
                     .build();
 
-            log.info("Incorrect password.");
-            log.info("uid : " + request.getUid());
-            log.info("/api/login end..........");
-            log.info("--------------------------------------------------");
-
-            return responseDTO;
         }
+        catch (IncorrectPasswordException e){
 
+            log.info(ErrorCode.INCORRECT_PASSWORD.getMessage());
 
-        ResponseDTO responseDTO = ResponseDTO.builder()
-                .httpCode(200)
-                .error(false)
-                .message("Login Successfully.")
-                .build();
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.INCORRECT_PASSWORD.ordinal())
+                    .message(ErrorCode.INCORRECT_PASSWORD.getMessage())
+                    .build();
 
-        log.info("Login Successfully.");
-        log.info("uid : " + request.getUid());
-        log.info("/api/login end..........");
-        log.info("--------------------------------------------------");
+        }
+        catch (Exception e){
 
-        return responseDTO;
+            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
 
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
+                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
+                    .build();
+
+        }
+        finally {
+
+            log.info("uid : {}", request.getUid());
+            log.info("/api/login {}", endMessage);
+            log.info(divideLog);
+
+        }
     }
 
-    @ResponseBody
+
     @PostMapping("/getUserInfo")
     public ResponseDTO getUserInfo(@RequestBody UserDTO request) {
 
-        log.info("--------------------------------------------------");
-        log.info("/api/getUserInfo start..........");
+        try{
 
-        UserDTO userDTO = userService.getUserInfoById(request.getUid());
+            log.info(divideLog);
+            log.info("/api/getUserInfo {}",startMessage);
 
-        userDTO.setPassword(null);
+            UserDTO userDTO = userService.getUserInfoById(request.getUid());
 
-        ResponseDTO responseDTO = ResponseDTO.builder()
-                .httpCode(200)
-                .error(false)
-                .message("success")
-                .content(userDTO)
-                .build();
+            if(userDTO == null){
+                throw new IncorrectUserException();
+            }
 
-        log.info("success.");
-        log.info("uid : " + request.getUid());
-        log.info("/api/getUserInfo end..........");
-        log.info("--------------------------------------------------");
+            userDTO.setPassword(null);
 
-        return responseDTO;
+            log.info(ErrorCode.NO_ERROR.getMessage());
+
+            return ResponseDTO.builder()
+                    .httpCode(200)
+                    .error(false)
+                    .errorCode(ErrorCode.NO_ERROR.ordinal())
+                    .message(ErrorCode.NO_ERROR.getMessage())
+                    .content(userDTO)
+                    .build();
+        }
+        catch (IncorrectUserException e){
+
+            log.info(ErrorCode.INCORRECT_USER.getMessage());
+
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.INCORRECT_USER.ordinal())
+                    .message(ErrorCode.INCORRECT_USER.getMessage())
+                    .build();
+
+        }
+        catch (Exception e){
+
+            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
+
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
+                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
+                    .build();
+
+        }
+        finally {
+
+            log.info("uid : {}", request.getUid());
+            log.info("/api/getUserInfo {}", endMessage);
+            log.info(divideLog);
+
+        }
     }
 
-    @ResponseBody
+
     @PutMapping("/updateUserInfo")
     public ResponseDTO updateUserInfo(@RequestBody UserDTO request) {
 
-        log.info("--------------------------------------------------");
-        log.info("/api/updateUserInfo start..........");
+        try{
 
-        UserDTO userDTO = userService.getUserInfoById(request.getUid());
+            log.info(divideLog);
+            log.info("/api/updateUserInfo {}", startMessage);
 
-        userDTO.setName(request.getName());
-        userDTO.setEmail(request.getEmail());
-        userDTO.setUrl(request.getUrl());
-        userDTO.setModDate(LocalDateTime.now());
+            UserDTO userDTO = userService.getUserInfoById(request.getUid());
 
-        userService.update(userDTO);
+            if(userDTO == null){
+                throw new IncorrectUserException();
+            }
 
-        ResponseDTO responseDTO = ResponseDTO.builder()
-                .httpCode(200)
-                .error(false)
-                .message("Update success.")
-                .build();
+            userDTO.setName(request.getName());
+            userDTO.setEmail(request.getEmail());
+            userDTO.setUrl(request.getUrl());
+            userDTO.setModDate(LocalDateTime.now());
 
-        log.info("Update success.");
-        log.info("uid : " + request.getUid());
-        log.info("/api/updateUserInfo end..........");
-        log.info("--------------------------------------------------");
+            userService.update(userDTO);
 
-        return responseDTO;
+            log.info(ErrorCode.NO_ERROR.getMessage());
+
+            return ResponseDTO.builder()
+                    .httpCode(200)
+                    .error(false)
+                    .errorCode(ErrorCode.NO_ERROR.ordinal())
+                    .message(ErrorCode.NO_ERROR.getMessage())
+                    .build();
+        }
+        catch (IncorrectUserException e){
+
+            log.info(ErrorCode.INCORRECT_USER.getMessage());
+
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.INCORRECT_USER.ordinal())
+                    .message(ErrorCode.INCORRECT_USER.getMessage())
+                    .build();
+
+        }
+        catch (Exception e){
+
+            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
+
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
+                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
+                    .build();
+
+        }
+        finally {
+
+            log.info("uid : {}", request.getUid());
+            log.info("/api/updateUserInfo {}", endMessage);
+            log.info(divideLog);
+
+        }
     }
 
-    @ResponseBody
+
     @DeleteMapping("/deleteUser")
     public ResponseDTO deleteUser(@RequestBody UserDTO request) {
 
-        log.info("--------------------------------------------------");
-        log.info("/api/deleteUser start..........");
+        try{
 
-        userService.deleteById(request.getUid());
+            log.info(divideLog);
+            log.info("/api/deleteUser {}", startMessage);
 
+            userService.deleteById(request.getUid());
 
-        ResponseDTO responseDTO = ResponseDTO.builder()
-                .httpCode(200)
-                .error(false)
-                .message("Delete success.")
-                .build();
+            log.info(ErrorCode.NO_ERROR.getMessage());
 
-        log.info("Delete success.");
-        log.info("uid : " + request.getUid());
-        log.info("/api/deleteUser end..........");
-        log.info("--------------------------------------------------");
+            return ResponseDTO.builder()
+                    .httpCode(200)
+                    .error(false)
+                    .errorCode(ErrorCode.NO_ERROR.ordinal())
+                    .message(ErrorCode.NO_ERROR.getMessage())
+                    .build();
 
-        return responseDTO;
+        }
+        catch (Exception e){
 
+            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
+
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
+                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
+                    .build();
+
+        }
+        finally {
+
+            log.info("uid : {}", request.getUid());
+            log.info("/api/deleteUser {}", endMessage);
+            log.info(divideLog);
+
+        }
     }
 
-    @ResponseBody
+
     @PostMapping("/checkPassword")
     public ResponseDTO checkPassword(@RequestBody UserDTO request){
 
-        log.info("--------------------------------------------------");
-        log.info("/api/checkPassword start..........");
+        try{
 
+            log.info(divideLog);
+            log.info("/api/checkPassword {}", startMessage);
 
-        UserDTO userDTO = userService.getUserInfoById(request.getUid());
+            UserDTO userDTO = userService.getUserInfoById(request.getUid());
 
-        if(userDTO == null){
-            ResponseDTO responseDTO = ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .message("Unexpected error.")
+            if(userDTO == null){
+                throw new IncorrectUserException();
+            }
+
+            if(!userDTO.getPassword().equals(request.getPassword())){
+                throw new IncorrectPasswordException();
+            }
+
+            log.info(ErrorCode.NO_ERROR.getMessage());
+
+            return ResponseDTO.builder()
+                    .httpCode(200)
+                    .error(false)
+                    .errorCode(ErrorCode.NO_ERROR.ordinal())
+                    .message(ErrorCode.NO_ERROR.getMessage())
                     .build();
 
-            log.info("Unexpected error");
-            log.info("/api/checkPassword end..........");
-            log.info("--------------------------------------------------");
-
-            return responseDTO;
         }
+        catch (IncorrectUserException e){
 
-        if(!userDTO.getPassword().equals(request.getPassword())){
+            log.info(ErrorCode.INCORRECT_USER.getMessage());
 
-            ResponseDTO responseDTO = ResponseDTO.builder()
+            return ResponseDTO.builder()
                     .httpCode(400)
                     .error(true)
-                    .message("Incorrect password.")
-                    .content(2)
+                    .errorCode(ErrorCode.INCORRECT_USER.ordinal())
+                    .message(ErrorCode.INCORRECT_USER.getMessage())
                     .build();
 
-            log.info("Incorrect password.");
-            log.info("uid : " + request.getUid());
-            log.info("/api/checkPassword end..........");
-            log.info("--------------------------------------------------");
-
-            return responseDTO;
         }
+        catch (IncorrectPasswordException e){
 
-        ResponseDTO responseDTO = ResponseDTO.builder()
-                .httpCode(200)
-                .error(false)
-                .message("Check Success.")
-                .build();
+            log.info(ErrorCode.INCORRECT_PASSWORD.getMessage());
 
-        log.info("Check Success.");
-        log.info("uid : " + request.getUid());
-        log.info("/api/checkPassword end..........");
-        log.info("--------------------------------------------------");
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.INCORRECT_PASSWORD.ordinal())
+                    .message(ErrorCode.INCORRECT_PASSWORD.getMessage())
+                    .build();
 
-        return responseDTO;
+        }
+        catch (Exception e){
 
+            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
+
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
+                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
+                    .build();
+
+        }
     }
 
-    @ResponseBody
+
     @PutMapping("/updatePassword")
     public ResponseDTO updatePassword(@RequestBody UserDTO request) {
 
-        log.info("--------------------------------------------------");
-        log.info("/api/updatePassword start..........");
+        try{
 
+            log.info(divideLog);
+            log.info("/api/updatePassword {}", startMessage);
 
-        UserDTO userDTO = userService.getUserInfoById(request.getUid());
+            UserDTO userDTO = userService.getUserInfoById(request.getUid());
 
-        if(userDTO == null){
-            ResponseDTO responseDTO = ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .message("Unexpected error.")
+            if(userDTO == null){
+                throw new IncorrectUserException();
+            }
+
+            userDTO.setPassword(request.getPassword());
+            userDTO.setModDate(LocalDateTime.now());
+
+            userService.register(userDTO);
+
+            return ResponseDTO.builder()
+                    .httpCode(200)
+                    .error(false)
+                    .errorCode(ErrorCode.NO_ERROR.ordinal())
+                    .message(ErrorCode.NO_ERROR.getMessage())
                     .build();
 
-            log.info("Unexpected error");
-            log.info("/api/checkPassword end..........");
-            log.info("--------------------------------------------------");
-
-            return responseDTO;
         }
+        catch (IncorrectUserException e){
 
-        userDTO.setPassword(request.getPassword());
-        userDTO.setModDate(LocalDateTime.now());
+            log.info(ErrorCode.INCORRECT_USER.getMessage());
 
-        userService.register(userDTO);
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.INCORRECT_USER.ordinal())
+                    .message(ErrorCode.INCORRECT_USER.getMessage())
+                    .build();
 
-        ResponseDTO responseDTO = ResponseDTO.builder()
-                .httpCode(200)
-                .error(false)
-                .message("Update password success.")
-                .build();
+        }
+        catch (Exception e){
 
-        log.info("Update password success.");
-        log.info("uid : " + request.getUid());
-        log.info("/api/updatePassword end..........");
-        log.info("--------------------------------------------------");
+            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
 
-        return responseDTO;
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
+                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
+                    .build();
+        }
+        finally {
+
+            log.info("uid : {}", request.getUid());
+            log.info("/api/updatePassword {}", endMessage);
+            log.info(divideLog);
+
+        }
     }
 
 
     @GetMapping("/isValidId")
     public ResponseDTO isValidId(@RequestParam String uid){
 
-        System.out.println(userService.getUserInfoById(uid));
+        try{
+            if(userService.getUserInfoById(uid) != null){
+                throw new AlreadyIdExistException();
+            }
 
-        Pattern pattern = Pattern.compile("(^[a-z0-9._-]{6,20}$)");
-
-        Matcher matcher = pattern.matcher(uid);
-        if(matcher.find() && userService.getUserInfoById(uid) == null){
-            ResponseDTO responseDTO = ResponseDTO.builder()
+            return ResponseDTO.builder()
                     .httpCode(200)
                     .error(false)
-                    .message("Valid ID.")
-                    .content(uid)
+                    .errorCode(ErrorCode.NO_ERROR.ordinal())
+                    .message(ErrorCode.NO_ERROR.getMessage())
+                    .content(UserDTO.builder().uid(uid).build())
                     .build();
 
-            return responseDTO;
+        }
+        catch (AlreadyIdExistException e){
+
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.ALREADY_ID_EXIST.ordinal())
+                    .message(ErrorCode.ALREADY_ID_EXIST.getMessage())
+                    .content(UserDTO.builder().uid(uid).build())
+                    .build();
 
         }
+        catch (Exception e){
 
+            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
+            log.info("/isValidId");
 
-        ResponseDTO responseDTO = ResponseDTO.builder()
-                .httpCode(400)
-                .error(true)
-                .message("Invalid ID.")
-                .content(uid)
-                .build();
+            return ResponseDTO.builder()
+                    .httpCode(400)
+                    .error(true)
+                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
+                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
+                    .build();
 
-        return responseDTO;
-
+        }
     }
-
 }
+
