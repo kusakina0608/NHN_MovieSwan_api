@@ -5,9 +5,9 @@ import com.nhn.rookie8.movieswanuserapi.dto.ResponseDTO;
 import com.nhn.rookie8.movieswanuserapi.dto.UserDTO;
 import com.nhn.rookie8.movieswanuserapi.service.UserService;
 import com.nhn.rookie8.movieswanuserapi.userEnum.ErrorCode;
-import com.nhn.rookie8.movieswanuserapi.userException.AlreadyIdExistException;
-import com.nhn.rookie8.movieswanuserapi.userException.IncorrectPasswordException;
-import com.nhn.rookie8.movieswanuserapi.userException.IncorrectUserException;
+import com.nhn.rookie8.movieswanuserapi.userexception.AlreadyIdExistException;
+import com.nhn.rookie8.movieswanuserapi.userexception.IncorrectPasswordException;
+import com.nhn.rookie8.movieswanuserapi.userexception.IncorrectUserException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -30,6 +30,19 @@ public class UserController {
     private String startMessage = "started..........";
     private String endMessage = "end..........";
 
+    private ResponseDTO returnResponseDto(ErrorCode errorCode, UserDTO userDTO){
+
+        log.info(errorCode.getMessage());
+
+        return ResponseDTO.builder()
+                .httpCode(errorCode.ordinal()==0?200:400)
+                .error(errorCode.ordinal()!=0)
+                .errorCode(errorCode.ordinal())
+                .message(errorCode.getMessage())
+                .content(userDTO)
+                .build();
+    }
+
 
     @PostMapping("/register")
     public ResponseDTO register(@RequestBody UserDTO request) {
@@ -49,45 +62,19 @@ public class UserController {
             request.setModDate(LocalDateTime.now());
 
             userService.register(request);
-            log.info(ErrorCode.NO_ERROR.getMessage());
 
-            return ResponseDTO.builder()
-                    .httpCode(200)
-                    .error(false)
-                    .errorCode(ErrorCode.NO_ERROR.ordinal())
-                    .message(ErrorCode.NO_ERROR.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.NO_ERROR, null);
         }
         catch (AlreadyIdExistException e){
-
-            log.info(ErrorCode.ALREADY_ID_EXIST.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.ALREADY_ID_EXIST.ordinal())
-                    .message(ErrorCode.ALREADY_ID_EXIST.getMessage())
-                    .build();
+            return returnResponseDto(ErrorCode.ALREADY_ID_EXIST, null);
         }
         catch (Exception e){
-
-            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
-                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.UNEXPECTED_ERROR, null);
         }
         finally {
-
             log.info("uid : {}", request.getUid());
             log.info("/api/register {}",endMessage);
             log.info(divideLog);
-
         }
     }
 
@@ -96,7 +83,6 @@ public class UserController {
     public ResponseDTO login(@RequestBody UserDTO request){
 
         try{
-
             log.info(divideLog);
             log.info("/api/login {}",startMessage);
             UserDTO userDTO = userService.getUserInfoById(request.getUid());
@@ -109,58 +95,21 @@ public class UserController {
                 throw new IncorrectPasswordException();
             }
 
-            log.info(ErrorCode.NO_ERROR.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(200)
-                    .error(false)
-                    .errorCode(ErrorCode.NO_ERROR.ordinal())
-                    .message(ErrorCode.NO_ERROR.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.NO_ERROR, null);
         }
         catch (IncorrectUserException e){
-
-            log.info(ErrorCode.INCORRECT_USER.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.INCORRECT_USER.ordinal())
-                    .message(ErrorCode.INCORRECT_USER.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.INCORRECT_USER, null);
         }
         catch (IncorrectPasswordException e){
-
-            log.info(ErrorCode.INCORRECT_PASSWORD.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.INCORRECT_PASSWORD.ordinal())
-                    .message(ErrorCode.INCORRECT_PASSWORD.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.INCORRECT_PASSWORD, null);
         }
         catch (Exception e){
-
-            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
-                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.UNEXPECTED_ERROR, null);
         }
         finally {
-
             log.info("uid : {}", request.getUid());
             log.info("/api/login {}", endMessage);
             log.info(divideLog);
-
         }
     }
 
@@ -169,7 +118,6 @@ public class UserController {
     public ResponseDTO getUserInfo(@RequestBody UserDTO request) {
 
         try{
-
             log.info(divideLog);
             log.info("/api/getUserInfo {}",startMessage);
 
@@ -181,46 +129,18 @@ public class UserController {
 
             userDTO.setPassword(null);
 
-            log.info(ErrorCode.NO_ERROR.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(200)
-                    .error(false)
-                    .errorCode(ErrorCode.NO_ERROR.ordinal())
-                    .message(ErrorCode.NO_ERROR.getMessage())
-                    .content(userDTO)
-                    .build();
+            return returnResponseDto(ErrorCode.NO_ERROR, userDTO);
         }
         catch (IncorrectUserException e){
-
-            log.info(ErrorCode.INCORRECT_USER.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.INCORRECT_USER.ordinal())
-                    .message(ErrorCode.INCORRECT_USER.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.INCORRECT_USER, null);
         }
         catch (Exception e){
-
-            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
-                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.UNEXPECTED_ERROR, null);
         }
         finally {
-
             log.info("uid : {}", request.getUid());
             log.info("/api/getUserInfo {}", endMessage);
             log.info(divideLog);
-
         }
     }
 
@@ -229,7 +149,6 @@ public class UserController {
     public ResponseDTO updateUserInfo(@RequestBody UserDTO request) {
 
         try{
-
             log.info(divideLog);
             log.info("/api/updateUserInfo {}", startMessage);
 
@@ -246,45 +165,18 @@ public class UserController {
 
             userService.update(userDTO);
 
-            log.info(ErrorCode.NO_ERROR.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(200)
-                    .error(false)
-                    .errorCode(ErrorCode.NO_ERROR.ordinal())
-                    .message(ErrorCode.NO_ERROR.getMessage())
-                    .build();
+            return returnResponseDto(ErrorCode.NO_ERROR, null);
         }
         catch (IncorrectUserException e){
-
-            log.info(ErrorCode.INCORRECT_USER.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.INCORRECT_USER.ordinal())
-                    .message(ErrorCode.INCORRECT_USER.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.INCORRECT_USER, null);
         }
         catch (Exception e){
-
-            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
-                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.UNEXPECTED_ERROR, null);
         }
         finally {
-
             log.info("uid : {}", request.getUid());
             log.info("/api/updateUserInfo {}", endMessage);
             log.info(divideLog);
-
         }
     }
 
@@ -293,40 +185,20 @@ public class UserController {
     public ResponseDTO deleteUser(@RequestBody UserDTO request) {
 
         try{
-
             log.info(divideLog);
             log.info("/api/deleteUser {}", startMessage);
 
             userService.deleteById(request.getUid());
 
-            log.info(ErrorCode.NO_ERROR.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(200)
-                    .error(false)
-                    .errorCode(ErrorCode.NO_ERROR.ordinal())
-                    .message(ErrorCode.NO_ERROR.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.NO_ERROR, null);
         }
         catch (Exception e){
-
-            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
-                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.UNEXPECTED_ERROR, null);
         }
         finally {
-
             log.info("uid : {}", request.getUid());
             log.info("/api/deleteUser {}", endMessage);
             log.info(divideLog);
-
         }
     }
 
@@ -335,7 +207,6 @@ public class UserController {
     public ResponseDTO checkPassword(@RequestBody UserDTO request){
 
         try{
-
             log.info(divideLog);
             log.info("/api/checkPassword {}", startMessage);
 
@@ -349,51 +220,21 @@ public class UserController {
                 throw new IncorrectPasswordException();
             }
 
-            log.info(ErrorCode.NO_ERROR.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(200)
-                    .error(false)
-                    .errorCode(ErrorCode.NO_ERROR.ordinal())
-                    .message(ErrorCode.NO_ERROR.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.NO_ERROR, null);
         }
         catch (IncorrectUserException e){
-
-            log.info(ErrorCode.INCORRECT_USER.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.INCORRECT_USER.ordinal())
-                    .message(ErrorCode.INCORRECT_USER.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.INCORRECT_USER, null);
         }
         catch (IncorrectPasswordException e){
-
-            log.info(ErrorCode.INCORRECT_PASSWORD.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.INCORRECT_PASSWORD.ordinal())
-                    .message(ErrorCode.INCORRECT_PASSWORD.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.INCORRECT_PASSWORD, null);
         }
         catch (Exception e){
-
-            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
-                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.UNEXPECTED_ERROR, null);
+        }
+        finally {
+            log.info("uid : {}", request.getUid());
+            log.info("/api/checkPassword {}", endMessage);
+            log.info(divideLog);
         }
     }
 
@@ -402,7 +243,6 @@ public class UserController {
     public ResponseDTO updatePassword(@RequestBody UserDTO request) {
 
         try{
-
             log.info(divideLog);
             log.info("/api/updatePassword {}", startMessage);
 
@@ -417,43 +257,18 @@ public class UserController {
 
             userService.register(userDTO);
 
-            return ResponseDTO.builder()
-                    .httpCode(200)
-                    .error(false)
-                    .errorCode(ErrorCode.NO_ERROR.ordinal())
-                    .message(ErrorCode.NO_ERROR.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.NO_ERROR, null);
         }
         catch (IncorrectUserException e){
-
-            log.info(ErrorCode.INCORRECT_USER.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.INCORRECT_USER.ordinal())
-                    .message(ErrorCode.INCORRECT_USER.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.INCORRECT_USER, null);
         }
         catch (Exception e){
-
-            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
-                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
-                    .build();
+            return returnResponseDto(ErrorCode.UNEXPECTED_ERROR, null);
         }
         finally {
-
             log.info("uid : {}", request.getUid());
             log.info("/api/updatePassword {}", endMessage);
             log.info(divideLog);
-
         }
     }
 
@@ -466,38 +281,14 @@ public class UserController {
                 throw new AlreadyIdExistException();
             }
 
-            return ResponseDTO.builder()
-                    .httpCode(200)
-                    .error(false)
-                    .errorCode(ErrorCode.NO_ERROR.ordinal())
-                    .message(ErrorCode.NO_ERROR.getMessage())
-                    .content(UserDTO.builder().uid(uid).build())
-                    .build();
-
+            return returnResponseDto(ErrorCode.NO_ERROR, UserDTO.builder().uid(uid).build());
         }
         catch (AlreadyIdExistException e){
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.ALREADY_ID_EXIST.ordinal())
-                    .message(ErrorCode.ALREADY_ID_EXIST.getMessage())
-                    .content(UserDTO.builder().uid(uid).build())
-                    .build();
-
+            return returnResponseDto(ErrorCode.ALREADY_ID_EXIST, UserDTO.builder().uid(uid).build());
         }
         catch (Exception e){
-
-            log.info(ErrorCode.UNEXPECTED_ERROR.getMessage());
             log.info("/isValidId");
-
-            return ResponseDTO.builder()
-                    .httpCode(400)
-                    .error(true)
-                    .errorCode(ErrorCode.UNEXPECTED_ERROR.ordinal())
-                    .message(ErrorCode.UNEXPECTED_ERROR.getMessage())
-                    .build();
-
+            return returnResponseDto(ErrorCode.UNEXPECTED_ERROR, null);
         }
     }
 }
