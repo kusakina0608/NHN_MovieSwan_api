@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class UserServiceTests {
+class UserServiceTests {
 
     @Autowired
     private UserService service;
 
     @Test
-    public void testRegister(){
+    void testRegister(){
 
         UserDTO userDTO = UserDTO.builder()
                 .uid("id")

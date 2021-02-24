@@ -15,7 +15,9 @@ public class ResponseDTO {
 
     private boolean error;
 
+    private Integer errorCode;
+
     private String message;
 
-    private Object content;
+    private UserDTO content;
 }

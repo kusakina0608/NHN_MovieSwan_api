@@ -23,5 +23,7 @@ public class UserDTO {
 
     private String url;
 
-    private LocalDateTime regDate, modDate;
+    private LocalDateTime regDate;
+
+    private LocalDateTime modDate;
 }
