@@ -1,8 +1,10 @@
 package com.nhn.rookie8.movieswanuserapi.service;
 
+import com.nhn.rookie8.movieswanuserapi.dto.ResponseDTO;
 import com.nhn.rookie8.movieswanuserapi.dto.UserDTO;
 import com.nhn.rookie8.movieswanuserapi.entity.User;
 import com.nhn.rookie8.movieswanuserapi.repository.UserRepository;
+import com.nhn.rookie8.movieswanuserapi.userenum.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,20 @@ public class UserServiceImpl implements UserService{
     @Override
     public Long update(UserDTO dto){
         return register(dto);
+    }
+
+    @Override
+    public ResponseDTO returnResponseDto(ErrorCode errorCode, UserDTO userDTO){
+
+        log.info(errorCode.getMessage());
+
+        return ResponseDTO.builder()
+                .httpCode(errorCode.ordinal()==0?200:400)
+                .error(errorCode.ordinal()!=0)
+                .errorCode(errorCode.ordinal())
+                .message(errorCode.getMessage())
+                .content(userDTO)
+                .build();
     }
 
     @Override

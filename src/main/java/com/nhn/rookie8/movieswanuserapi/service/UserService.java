@@ -1,7 +1,9 @@
 package com.nhn.rookie8.movieswanuserapi.service;
 
+import com.nhn.rookie8.movieswanuserapi.dto.ResponseDTO;
 import com.nhn.rookie8.movieswanuserapi.dto.UserDTO;
 import com.nhn.rookie8.movieswanuserapi.entity.User;
+import com.nhn.rookie8.movieswanuserapi.userenum.ErrorCode;
 
 public interface UserService {
 
@@ -10,6 +12,8 @@ public interface UserService {
     Long update(UserDTO dto);
 
     UserDTO getUserInfoById(String uid);
+
+    ResponseDTO returnResponseDto(ErrorCode errorCode, UserDTO userDTO);
 
     void deleteById(String uid);
 
