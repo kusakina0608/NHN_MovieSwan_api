@@ -1,4 +1,4 @@
-package com.nhn.rookie8.movieswanuserapi.userEnum;
+package com.nhn.rookie8.movieswanuserapi.userenum;
 
 import lombok.Getter;
 
