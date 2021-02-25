@@ -29,6 +29,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseDTO register(@RequestBody UserDTO request) throws UserException{
 
+
         if(request == null || request.getUid().isEmpty()){
             throw new UnexpectedErrorException();
         }
@@ -44,7 +45,8 @@ public class UserController {
 
         userService.register(request);
 
-        return userService.returnResponseDto(ErrorCode.NO_ERROR, null);
+        ResponseDTO responseDTO= userService.returnResponseDto(ErrorCode.NO_ERROR, null);
+        return responseDTO;
     }
 
 

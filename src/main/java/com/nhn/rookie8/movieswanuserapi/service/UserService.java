@@ -4,7 +4,9 @@ import com.nhn.rookie8.movieswanuserapi.dto.ResponseDTO;
 import com.nhn.rookie8.movieswanuserapi.dto.UserDTO;
 import com.nhn.rookie8.movieswanuserapi.entity.User;
 import com.nhn.rookie8.movieswanuserapi.userenum.ErrorCode;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface UserService {
 
     Long register(UserDTO dto);
