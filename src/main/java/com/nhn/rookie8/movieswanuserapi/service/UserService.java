@@ -18,7 +18,7 @@ public interface UserService {
     void deleteById(String uid);
 
     default User dtoToEntity(UserDTO dto){
-        User entity = User.builder()
+        return User.builder()
                 .uid(dto.getUid())
                 .password(dto.getPassword())
                 .name(dto.getName())
@@ -27,11 +27,10 @@ public interface UserService {
                 .regDate(dto.getRegDate())
                 .modDate(dto.getModDate())
                 .build();
-        return entity;
     }
 
     default UserDTO entityToDto(User entity){
-        UserDTO dto = UserDTO.builder()
+        return UserDTO.builder()
                 .uid(entity.getUid())
                 .password(entity.getPassword())
                 .name(entity.getName())
@@ -40,6 +39,5 @@ public interface UserService {
                 .regDate(entity.getRegDate())
                 .modDate(entity.getModDate())
                 .build();
-        return dto;
     }
 }
