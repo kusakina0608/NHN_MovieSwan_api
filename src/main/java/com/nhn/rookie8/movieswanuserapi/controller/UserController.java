@@ -5,9 +5,8 @@ import com.nhn.rookie8.movieswanuserapi.dto.ResponseDTO;
 import com.nhn.rookie8.movieswanuserapi.dto.UserDTO;
 import com.nhn.rookie8.movieswanuserapi.service.UserService;
 import com.nhn.rookie8.movieswanuserapi.userenum.ErrorCode;
-import com.nhn.rookie8.movieswanuserapi.userexception.AlreadyIdExistException;
-import com.nhn.rookie8.movieswanuserapi.userexception.IncorrectPasswordException;
-import com.nhn.rookie8.movieswanuserapi.userexception.IncorrectUserException;
+import com.nhn.rookie8.movieswanuserapi.userexception.*;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -26,15 +25,13 @@ public class UserController {
 
     private final UserService userService;
 
-    private String divideLog = "--------------------------------------------------";
-    private String startMessage = "started..........";
-    private String endMessage = "end..........";
 
     @PostMapping("/register")
-    public ResponseDTO register(@RequestBody UserDTO request) throws Exception{
+    public ResponseDTO register(@RequestBody UserDTO request) throws UserException{
 
-        log.info(divideLog);
-        log.info("/api/register {}",startMessage);
+        if(request == null || request.getUid().isEmpty()){
+            throw new UnexpectedErrorException();
+        }
 
         UserDTO check = userService.getUserInfoById(request.getUid());
 
@@ -47,19 +44,17 @@ public class UserController {
 
         userService.register(request);
 
-        log.info("uid : {}", request.getUid());
-        log.info("/api/register {}",endMessage);
-        log.info(divideLog);
-
         return userService.returnResponseDto(ErrorCode.NO_ERROR, null);
     }
 
 
     @PostMapping("/login")
-    public ResponseDTO login(@RequestBody UserDTO request) throws Exception{
+    public ResponseDTO login(@RequestBody UserDTO request) throws UserException{
 
-        log.info(divideLog);
-        log.info("/api/login {}",startMessage);
+        if(request == null || request.getUid().isEmpty()){
+            throw new UnexpectedErrorException();
+        }
+
         UserDTO userDTO = userService.getUserInfoById(request.getUid());
 
         if(userDTO == null){
@@ -70,19 +65,17 @@ public class UserController {
             throw new IncorrectPasswordException();
         }
 
-        log.info("uid : {}", request.getUid());
-        log.info("/api/login {}", endMessage);
-        log.info(divideLog);
 
         return userService.returnResponseDto(ErrorCode.NO_ERROR, null);
     }
 
 
     @PostMapping("/getUserInfo")
-    public ResponseDTO getUserInfo(@RequestBody UserDTO request) throws Exception {
+    public ResponseDTO getUserInfo(@RequestBody UserDTO request) throws UserException {
 
-        log.info(divideLog);
-        log.info("/api/getUserInfo {}",startMessage);
+        if(request == null || request.getUid().isEmpty()){
+            throw new UnexpectedErrorException();
+        }
 
         UserDTO userDTO = userService.getUserInfoById(request.getUid());
 
@@ -92,19 +85,16 @@ public class UserController {
 
         userDTO.setPassword(null);
 
-        log.info("uid : {}", request.getUid());
-        log.info("/api/getUserInfo {}", endMessage);
-        log.info(divideLog);
-
         return userService.returnResponseDto(ErrorCode.NO_ERROR, userDTO);
     }
 
 
     @PutMapping("/updateUserInfo")
-    public ResponseDTO updateUserInfo(@RequestBody UserDTO request) throws Exception {
+    public ResponseDTO updateUserInfo(@RequestBody UserDTO request) throws UserException {
 
-        log.info(divideLog);
-        log.info("/api/updateUserInfo {}", startMessage);
+        if(request == null || request.getUid().isEmpty()){
+            throw new UnexpectedErrorException();
+        }
 
         UserDTO userDTO = userService.getUserInfoById(request.getUid());
 
@@ -119,35 +109,29 @@ public class UserController {
 
         userService.update(userDTO);
 
-        log.info("uid : {}", request.getUid());
-        log.info("/api/updateUserInfo {}", endMessage);
-        log.info(divideLog);
-
         return userService.returnResponseDto(ErrorCode.NO_ERROR, null);
     }
 
 
     @DeleteMapping("/deleteUser")
-    public ResponseDTO deleteUser(@RequestBody UserDTO request) throws Exception {
+    public ResponseDTO deleteUser(@RequestBody UserDTO request) throws UserException {
 
-        log.info(divideLog);
-        log.info("/api/deleteUser {}", startMessage);
+        if(request == null || request.getUid().isEmpty()){
+            throw new UnexpectedErrorException();
+        }
 
         userService.deleteById(request.getUid());
-
-        log.info("uid : {}", request.getUid());
-        log.info("/api/deleteUser {}", endMessage);
-        log.info(divideLog);
 
         return userService.returnResponseDto(ErrorCode.NO_ERROR, null);
     }
 
 
     @PostMapping("/checkPassword")
-    public ResponseDTO checkPassword(@RequestBody UserDTO request) throws Exception {
+    public ResponseDTO checkPassword(@RequestBody UserDTO request) throws UserException {
 
-        log.info(divideLog);
-        log.info("/api/checkPassword {}", startMessage);
+        if(request == null || request.getUid().isEmpty()){
+            throw new UnexpectedErrorException();
+        }
 
         UserDTO userDTO = userService.getUserInfoById(request.getUid());
 
@@ -159,19 +143,17 @@ public class UserController {
             throw new IncorrectPasswordException();
         }
 
-        log.info("uid : {}", request.getUid());
-        log.info("/api/checkPassword {}", endMessage);
-        log.info(divideLog);
 
         return userService.returnResponseDto(ErrorCode.NO_ERROR, null);
     }
 
 
     @PutMapping("/updatePassword")
-    public ResponseDTO updatePassword(@RequestBody UserDTO request) throws Exception {
+    public ResponseDTO updatePassword(@RequestBody UserDTO request) throws UserException {
 
-        log.info(divideLog);
-        log.info("/api/updatePassword {}", startMessage);
+        if(request == null || request.getUid().isEmpty()){
+            throw new UnexpectedErrorException();
+        }
 
         UserDTO userDTO = userService.getUserInfoById(request.getUid());
 
@@ -184,19 +166,21 @@ public class UserController {
 
         userService.register(userDTO);
 
-        log.info("uid : {}", request.getUid());
-        log.info("/api/updatePassword {}", endMessage);
-        log.info(divideLog);
-
         return userService.returnResponseDto(ErrorCode.NO_ERROR, null);
     }
 
 
     @GetMapping("/isValidId")
-    public ResponseDTO isValidId(@RequestParam String uid) throws Exception{
+    public ResponseDTO isValidId(@RequestParam String uid) throws UserException{
+
+        if(uid.isEmpty()){
+            throw new UnexpectedErrorException();
+        }
+
         if(userService.getUserInfoById(uid) != null){
             throw new AlreadyIdExistException();
         }
+
         return userService.returnResponseDto(ErrorCode.NO_ERROR, UserDTO.builder().uid(uid).build());
     }
 

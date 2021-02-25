@@ -36,11 +36,9 @@ public class UserServiceImpl implements UserService{
     @Override
     public ResponseDTO returnResponseDto(ErrorCode errorCode, UserDTO userDTO){
 
-        log.info(errorCode.getMessage());
-
         return ResponseDTO.builder()
-                .httpCode(errorCode.ordinal()==0?200:400)
-                .error(errorCode.ordinal()!=0)
+                .httpCode(errorCode==ErrorCode.NO_ERROR?200:400)
+                .error(errorCode!=ErrorCode.NO_ERROR)
                 .errorCode(errorCode.ordinal())
                 .message(errorCode.getMessage())
                 .content(userDTO)
