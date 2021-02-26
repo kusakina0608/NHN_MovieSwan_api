@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -18,19 +19,24 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
 
+
     @Override
-    public Long register(UserDTO dto){
+    public void register(UserDTO dto){
 
+        dto.setRegDate(LocalDateTime.now());
+        dto.setModDate(LocalDateTime.now());
         User entity = dtoToEntity(dto);
-
         userRepository.save(entity);
 
-        return null;
     }
 
     @Override
-    public Long update(UserDTO dto){
-        return register(dto);
+    public void update(UserDTO dto){
+
+        dto.setModDate(LocalDateTime.now());
+        User entity = dtoToEntity(dto);
+        userRepository.save(entity);
+
     }
 
     @Override

@@ -23,6 +23,6 @@ class UserServiceTests {
                 .url("http")
                 .build();
 
-        System.out.println(service.register(userDTO));
+        service.register(userDTO);
     }
 }

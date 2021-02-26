@@ -29,6 +29,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseDTO register(@RequestBody UserDTO request) throws UserException{
 
+
         if(request == null || request.getUid().isEmpty()){
             throw new UnexpectedErrorException();
         }
@@ -38,9 +39,6 @@ public class UserController {
         if(check != null){
             throw new AlreadyIdExistException();
         }
-
-        request.setRegDate(LocalDateTime.now());
-        request.setModDate(LocalDateTime.now());
 
         userService.register(request);
 
@@ -105,7 +103,6 @@ public class UserController {
         userDTO.setName(request.getName());
         userDTO.setEmail(request.getEmail());
         userDTO.setUrl(request.getUrl());
-        userDTO.setModDate(LocalDateTime.now());
 
         userService.update(userDTO);
 
