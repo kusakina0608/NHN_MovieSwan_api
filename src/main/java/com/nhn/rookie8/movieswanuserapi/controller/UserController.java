@@ -40,13 +40,9 @@ public class UserController {
             throw new AlreadyIdExistException();
         }
 
-        request.setRegDate(LocalDateTime.now());
-        request.setModDate(LocalDateTime.now());
-
         userService.register(request);
 
-        ResponseDTO responseDTO= userService.returnResponseDto(ErrorCode.NO_ERROR, null);
-        return responseDTO;
+        return userService.returnResponseDto(ErrorCode.NO_ERROR, null);
     }
 
 
@@ -107,7 +103,6 @@ public class UserController {
         userDTO.setName(request.getName());
         userDTO.setEmail(request.getEmail());
         userDTO.setUrl(request.getUrl());
-        userDTO.setModDate(LocalDateTime.now());
 
         userService.update(userDTO);
 
