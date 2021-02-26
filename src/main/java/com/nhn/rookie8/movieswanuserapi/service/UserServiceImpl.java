@@ -21,24 +21,22 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public Long register(UserDTO dto){
+    public void register(UserDTO dto){
 
         dto.setRegDate(LocalDateTime.now());
         dto.setModDate(LocalDateTime.now());
         User entity = dtoToEntity(dto);
         userRepository.save(entity);
 
-        return null;
     }
 
     @Override
-    public Long update(UserDTO dto){
+    public void update(UserDTO dto){
 
         dto.setModDate(LocalDateTime.now());
         User entity = dtoToEntity(dto);
         userRepository.save(entity);
 
-        return null;
     }
 
     @Override

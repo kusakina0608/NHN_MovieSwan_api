@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserService {
 
-    Long register(UserDTO dto);
+    void register(UserDTO dto);
 
-    Long update(UserDTO dto);
+    void update(UserDTO dto);
 
     UserDTO getUserInfoById(String uid);
 
