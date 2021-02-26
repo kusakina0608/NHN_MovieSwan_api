@@ -70,7 +70,7 @@ public class UserControllerTests {
 
     @BeforeEach
     public void setUp(){
-        System.out.println("setup");
+        log.info("setup");
         uid = createUid();
 
         userDTO = UserDTO.builder()
@@ -96,7 +96,7 @@ public class UserControllerTests {
 
     @AfterEach
     public void tearDown(){
-        System.out.println("teardown");
+        log.info("teardown");
     }
 
     @Test
