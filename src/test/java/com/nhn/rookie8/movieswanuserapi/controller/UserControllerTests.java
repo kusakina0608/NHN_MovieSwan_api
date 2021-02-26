@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @WebMvcTest({UserController.class,UserControllerAdvice.class})
-public class UserControllerTests {
+class UserControllerTests {
 
     @Autowired
     MockMvc mockMvc;
@@ -100,7 +100,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void registerTest() throws Exception {
+    void registerTest() throws Exception {
 
         //존재하는 ID이면 회원가입 미진행
         when(userService.getUserInfoById("uid"))
@@ -143,7 +143,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void loginTest() throws Exception {
+    void loginTest() throws Exception {
 
         //Id, password 모두 일치
         when(userService.getUserInfoById(userDTO.getUid()))
@@ -189,7 +189,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void getUserInfoTest() throws Exception {
+    void getUserInfoTest() throws Exception {
 
         when(userService.getUserInfoById(any(String.class)))
                 .thenReturn(userDTO);

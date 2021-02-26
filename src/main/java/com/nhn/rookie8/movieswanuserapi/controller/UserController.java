@@ -27,7 +27,7 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public ResponseDTO register(@RequestBody UserDTO request) throws UserException{
+    public ResponseDTO register(@RequestBody UserDTO request) {
 
 
         if(request == null || request.getUid().isEmpty()){
@@ -47,7 +47,7 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseDTO login(@RequestBody UserDTO request) throws UserException{
+    public ResponseDTO login(@RequestBody UserDTO request) {
 
         if(request == null || request.getUid().isEmpty()){
             throw new UnexpectedErrorException();
@@ -69,7 +69,7 @@ public class UserController {
 
 
     @PostMapping("/getUserInfo")
-    public ResponseDTO getUserInfo(@RequestBody UserDTO request) throws UserException {
+    public ResponseDTO getUserInfo(@RequestBody UserDTO request) {
 
         if(request == null || request.getUid().isEmpty()){
             throw new UnexpectedErrorException();
@@ -88,7 +88,7 @@ public class UserController {
 
 
     @PutMapping("/updateUserInfo")
-    public ResponseDTO updateUserInfo(@RequestBody UserDTO request) throws UserException {
+    public ResponseDTO updateUserInfo(@RequestBody UserDTO request) {
 
         if(request == null || request.getUid().isEmpty()){
             throw new UnexpectedErrorException();
@@ -111,7 +111,7 @@ public class UserController {
 
 
     @DeleteMapping("/deleteUser")
-    public ResponseDTO deleteUser(@RequestBody UserDTO request) throws UserException {
+    public ResponseDTO deleteUser(@RequestBody UserDTO request) {
 
         if(request == null || request.getUid().isEmpty()){
             throw new UnexpectedErrorException();
@@ -124,7 +124,7 @@ public class UserController {
 
 
     @PostMapping("/checkPassword")
-    public ResponseDTO checkPassword(@RequestBody UserDTO request) throws UserException {
+    public ResponseDTO checkPassword(@RequestBody UserDTO request) {
 
         if(request == null || request.getUid().isEmpty()){
             throw new UnexpectedErrorException();
@@ -146,7 +146,7 @@ public class UserController {
 
 
     @PutMapping("/updatePassword")
-    public ResponseDTO updatePassword(@RequestBody UserDTO request) throws UserException {
+    public ResponseDTO updatePassword(@RequestBody UserDTO request) {
 
         if(request == null || request.getUid().isEmpty()){
             throw new UnexpectedErrorException();
@@ -168,7 +168,7 @@ public class UserController {
 
 
     @GetMapping("/isValidId")
-    public ResponseDTO isValidId(@RequestParam String uid) throws UserException{
+    public ResponseDTO isValidId(@RequestParam String uid) {
 
         if(uid.isEmpty()){
             throw new UnexpectedErrorException();
