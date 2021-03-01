@@ -5,10 +5,8 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode{
     NO_ERROR("Request success."),
-    ALREADY_ID_EXIST("Id already exist."),
-    INCORRECT_USER("No user matched."),
-    INCORRECT_PASSWORD("Incorrect password."),
-    UNEXPECTED_ERROR("Unexpected error");
+    ID_OR_PASSWORD_ERROR("Id or password error"),
+    INPUT_ERROR("Input error");
 
     private String message;
 

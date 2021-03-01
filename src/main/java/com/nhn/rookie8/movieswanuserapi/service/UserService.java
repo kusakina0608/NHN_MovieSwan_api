@@ -1,7 +1,6 @@
 package com.nhn.rookie8.movieswanuserapi.service;
 
-import com.nhn.rookie8.movieswanuserapi.dto.ResponseDTO;
-import com.nhn.rookie8.movieswanuserapi.dto.UserDTO;
+import com.nhn.rookie8.movieswanuserapi.dto.*;
 import com.nhn.rookie8.movieswanuserapi.entity.User;
 import com.nhn.rookie8.movieswanuserapi.userenum.ErrorCode;
 import org.springframework.stereotype.Service;
@@ -9,15 +8,27 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserService {
 
-    void register(UserDTO dto);
 
-    void update(UserDTO dto);
+    boolean check(UserBasicDTO request);
+
+    boolean check(UserAuthDTO request);
+
+    boolean check(UserIdDTO request);
+
+    boolean check(String request);
+
+    void register(UserBasicDTO dto);
+
+    boolean alreadyUserExist(UserBasicDTO request);
+
+    boolean authenticate(UserAuthDTO request);
 
     UserDTO getUserInfoById(String uid);
 
-    ResponseDTO returnResponseDto(ErrorCode errorCode, UserDTO userDTO);
+    ResponseDTO responseWithContent(ErrorCode errorCode, Object content);
 
-    void deleteById(String uid);
+    ResponseDTO responseWithoutContent(ErrorCode errorCode);
+
 
     default User dtoToEntity(UserDTO dto){
         return User.builder()
@@ -32,6 +43,7 @@ public interface UserService {
     }
 
     default UserDTO entityToDto(User entity){
+
         return UserDTO.builder()
                 .uid(entity.getUid())
                 .password(entity.getPassword())

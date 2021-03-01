@@ -1,8 +1,6 @@
 package com.nhn.rookie8.movieswanuserapi.service;
 
-import com.nhn.rookie8.movieswanuserapi.dto.ResponseDTO;
-import com.nhn.rookie8.movieswanuserapi.dto.UserDTO;
-import com.nhn.rookie8.movieswanuserapi.entity.User;
+import com.nhn.rookie8.movieswanuserapi.dto.*;
 import com.nhn.rookie8.movieswanuserapi.repository.UserRepository;
 import com.nhn.rookie8.movieswanuserapi.userenum.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +8,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -21,60 +18,87 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public void register(UserDTO dto){
+    public boolean check(UserBasicDTO request) {
+        return request.getUid() != null && !request.getUid().trim().isEmpty()
+                && request.getPassword() != null && !request.getPassword().trim().isEmpty()
+                && request.getName() != null && !request.getName().trim().isEmpty()
+                && request.getEmail() != null && !request.getEmail().trim().isEmpty()
+                && request.getUrl() != null && !request.getUrl().trim().isEmpty();
+    }
 
-        dto.setRegDate(LocalDateTime.now());
-        dto.setModDate(LocalDateTime.now());
-        User entity = dtoToEntity(dto);
-        userRepository.save(entity);
+    @Override
+    public boolean check(UserAuthDTO request) {
+        return request.getUid() != null && !request.getUid().trim().isEmpty()
+                && request.getPassword() != null && !request.getPassword().trim().isEmpty();
+    }
+
+    @Override
+    public boolean check(UserIdDTO request) {
+        return request.getUid() != null && !request.getUid().trim().isEmpty();
+    }
+
+    @Override
+    public boolean check(String request) {
+        return request != null && !request.trim().isEmpty();
+    }
+
+    @Override
+    public void register(UserBasicDTO dto){
+
+        userRepository.save(
+                dtoToEntity(
+                        UserDTO.builder()
+                                .uid(dto.getUid())
+                                .password(dto.getPassword())
+                                .name(dto.getName())
+                                .email(dto.getEmail())
+                                .url(dto.getUrl())
+                                .regDate(LocalDateTime.now())
+                                .modDate(LocalDateTime.now())
+                                .build()
+                )
+        );
 
     }
 
     @Override
-    public void update(UserDTO dto){
-
-        dto.setModDate(LocalDateTime.now());
-        User entity = dtoToEntity(dto);
-        userRepository.save(entity);
-
+    public boolean alreadyUserExist(UserBasicDTO request){
+        return userRepository.findById(request.getUid()).isPresent();
     }
 
     @Override
-    public ResponseDTO returnResponseDto(ErrorCode errorCode, UserDTO userDTO){
+    public boolean authenticate(UserAuthDTO request){
+        return userRepository.findById(request.getUid())
+                .filter(user -> user.getPassword().equals(request.getPassword())).isPresent();
+    }
+
+
+    @Override
+    public ResponseDTO responseWithContent(ErrorCode errorCode, Object content){
 
         return ResponseDTO.builder()
                 .httpCode(errorCode==ErrorCode.NO_ERROR?200:400)
                 .error(errorCode!=ErrorCode.NO_ERROR)
                 .errorCode(errorCode.ordinal())
                 .message(errorCode.getMessage())
-                .content(userDTO)
+                .content(content)
+                .build();
+    }
+
+    @Override
+    public ResponseDTO responseWithoutContent(ErrorCode errorCode){
+
+        return ResponseDTO.builder()
+                .httpCode(errorCode==ErrorCode.NO_ERROR?200:400)
+                .error(errorCode!=ErrorCode.NO_ERROR)
+                .errorCode(errorCode.ordinal())
+                .message(errorCode.getMessage())
                 .build();
     }
 
     @Override
     public UserDTO getUserInfoById(String uid){
-
-        Optional<User> result = userRepository.findById(uid);
-
-        User user;
-        UserDTO userDTO = null;
-
-        if(result.isPresent()){
-            user = result.get();
-            userDTO = entityToDto(user);
-        }
-
-        return userDTO;
+        return userRepository.findById(uid).map(this::entityToDto).orElse(null);
     }
 
-    @Override
-    public void deleteById(String uid){
-
-        Optional<User> result = userRepository.findById(uid);
-
-        if(result.isPresent()){
-            userRepository.deleteById(uid);
-        }
-
-    }
 }

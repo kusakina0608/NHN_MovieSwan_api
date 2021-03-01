@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-
+    //TODO : 컬럼명 확인
     @Id
     @Column(length = 21, nullable = false)
     private String uid;
