@@ -1,4 +1,4 @@
-package com.nhn.rookie8.movieswanuserapi.dto;
+package com.nhn.rookie8.movieswanmemberapi.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserDTO {
+public class MemberDTO {
 
-    private String uid;
+    private String memberId;
 
     private String password;
 

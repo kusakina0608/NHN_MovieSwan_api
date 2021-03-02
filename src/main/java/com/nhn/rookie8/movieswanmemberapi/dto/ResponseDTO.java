@@ -1,4 +1,4 @@
-package com.nhn.rookie8.movieswanuserapi.dto;
+package com.nhn.rookie8.movieswanmemberapi.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +19,5 @@ public class ResponseDTO {
 
     private String message;
 
-    private UserDTO content;
+    private Object content;
 }
