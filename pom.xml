@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.nhn.rookie8</groupId>
-	<artifactId>movieswan-user-api</artifactId>
+	<artifactId>movieswan-member-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>movieswan-user-api</name>
+	<name>movieswan-member-api</name>
 	<description>NHN Basecamp RookieSwan Project</description>
 	<properties>
 		<java.version>1.8</java.version>

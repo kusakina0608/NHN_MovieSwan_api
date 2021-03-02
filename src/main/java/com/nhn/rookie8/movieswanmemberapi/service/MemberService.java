@@ -1,32 +1,32 @@
-package com.nhn.rookie8.movieswanuserapi.service;
+package com.nhn.rookie8.movieswanmemberapi.service;
 
-import com.nhn.rookie8.movieswanuserapi.dto.*;
-import com.nhn.rookie8.movieswanuserapi.entity.User;
-import com.nhn.rookie8.movieswanuserapi.userenum.ErrorCode;
+import com.nhn.rookie8.movieswanmemberapi.dto.*;
+import com.nhn.rookie8.movieswanmemberapi.entity.Member;
+import com.nhn.rookie8.movieswanmemberapi.memberenum.ErrorCode;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface UserService {
+public interface MemberService {
 
     boolean check(Object request);
 
     boolean checkString(String request);
 
-    void register(UserRegisterDTO dto);
+    void register(MemberRegisterDTO dto);
 
-    boolean alreadyUserExist(UserRegisterDTO request);
+    boolean alreadyUserExist(MemberRegisterDTO request);
 
-    UserIdNameDTO authenticate(UserAuthDTO request);
+    MemberIdNameDTO authenticate(MemberAuthDTO request);
 
-    UserDTO getUserInfoById(String uid);
+    MemberDTO getUserInfoById(String uid);
 
     ResponseDTO responseWithContent(ErrorCode errorCode, Object content);
 
     ResponseDTO responseWithoutContent(ErrorCode errorCode);
 
-    default User dtoToEntity(UserDTO dto){
-        return User.builder()
-                .uid(dto.getUid())
+    default Member dtoToEntity(MemberDTO dto){
+        return Member.builder()
+                .memberId(dto.getMemberId())
                 .password(dto.getPassword())
                 .name(dto.getName())
                 .email(dto.getEmail())
@@ -36,10 +36,10 @@ public interface UserService {
                 .build();
     }
 
-    default UserDTO entityToDto(User entity){
+    default MemberDTO entityToDto(Member entity){
 
-        return UserDTO.builder()
-                .uid(entity.getUid())
+        return MemberDTO.builder()
+                .memberId(entity.getMemberId())
                 .password(entity.getPassword())
                 .name(entity.getName())
                 .email(entity.getEmail())
@@ -49,10 +49,10 @@ public interface UserService {
                 .build();
     }
 
-    default UserIdNameDTO entityToUserIdNameDto(User entity){
+    default MemberIdNameDTO entityToUserIdNameDto(Member entity){
 
-        return UserIdNameDTO.builder()
-                .uid(entity.getUid())
+        return MemberIdNameDTO.builder()
+                .memberId(entity.getMemberId())
                 .name(entity.getName())
                 .build();
     }

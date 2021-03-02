@@ -1,4 +1,4 @@
-package com.nhn.rookie8.movieswanuserapi.entity;
+package com.nhn.rookie8.movieswanmemberapi.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
-    //TODO : 컬럼명 확인
+public class Member {
+
     @Id
-    @Column(length = 21, nullable = false)
-    private String uid;
+    @Column(name = "member_id", length = 21, nullable = false)
+    private String memberId;
 
     @Column(length = 100, nullable = false)
     private String password;
@@ -34,10 +34,10 @@ public class User {
     private String url;
 
     @CreatedDate
-    @Column(name = "regdate", updatable = false)
+    @Column(name = "reg_date", updatable = false)
     private LocalDateTime regDate;
 
     @LastModifiedDate
-    @Column(name = "moddate")
+    @Column(name = "mod_date")
     private LocalDateTime modDate;
 }

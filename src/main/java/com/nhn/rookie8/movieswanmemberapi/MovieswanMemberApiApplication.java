@@ -1,13 +1,13 @@
-package com.nhn.rookie8.movieswanuserapi;
+package com.nhn.rookie8.movieswanmemberapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MovieswanUserApiApplication {
+public class MovieswanMemberApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MovieswanUserApiApplication.class, args);
+		SpringApplication.run(MovieswanMemberApiApplication.class, args);
 	}
 
 }

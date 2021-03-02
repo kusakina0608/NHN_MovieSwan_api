@@ -1,6 +1,6 @@
-package com.nhn.rookie8.movieswanuserapi.repository;
+package com.nhn.rookie8.movieswanmemberapi.repository;
 
-import com.nhn.rookie8.movieswanuserapi.entity.User;
+import com.nhn.rookie8.movieswanmemberapi.entity.Member;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,18 +9,18 @@ import java.time.LocalDateTime;
 import java.util.stream.IntStream;
 
 @SpringBootTest
-class UserRepositoryTests {
+class MemberRepositoryTests {
 
     @Autowired
-    UserRepository userRepository;
+    MemberRepository memberRepository;
 
     @Test
     void testInsertDummies(){
 
         IntStream.rangeClosed(1,1000).forEach(i->{
-            User user = User
+            Member member = Member
                     .builder()
-                    .uid("" + i)
+                    .memberId("" + i)
                     .password("" + i)
                     .name("name.." + i)
                     .email("email.." + i)
@@ -29,7 +29,7 @@ class UserRepositoryTests {
                     .modDate(LocalDateTime.now())
                     .build();
 
-            userRepository.save(user);
+            memberRepository.save(member);
 
         });
     }

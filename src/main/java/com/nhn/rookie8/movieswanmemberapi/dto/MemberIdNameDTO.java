@@ -1,5 +1,4 @@
-package com.nhn.rookie8.movieswanuserapi.dto;
-
+package com.nhn.rookie8.movieswanmemberapi.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,10 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserAuthDTO {
+public class MemberIdNameDTO {
 
-    private String uid;
+    private String memberId;
 
-    private String password;
-
+    private String name;
 }

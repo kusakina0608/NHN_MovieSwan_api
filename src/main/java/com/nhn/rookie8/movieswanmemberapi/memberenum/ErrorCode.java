@@ -1,4 +1,4 @@
-package com.nhn.rookie8.movieswanuserapi.userenum;
+package com.nhn.rookie8.movieswanmemberapi.memberenum;
 
 import lombok.Getter;
 

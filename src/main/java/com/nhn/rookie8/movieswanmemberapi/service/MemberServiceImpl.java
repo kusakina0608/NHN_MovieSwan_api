@@ -1,10 +1,10 @@
-package com.nhn.rookie8.movieswanuserapi.service;
+package com.nhn.rookie8.movieswanmemberapi.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhn.rookie8.movieswanuserapi.dto.*;
-import com.nhn.rookie8.movieswanuserapi.repository.UserRepository;
-import com.nhn.rookie8.movieswanuserapi.userenum.ErrorCode;
+import com.nhn.rookie8.movieswanmemberapi.dto.*;
+import com.nhn.rookie8.movieswanmemberapi.repository.MemberRepository;
+import com.nhn.rookie8.movieswanmemberapi.memberenum.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -15,9 +15,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public class UserServiceImpl implements UserService{
+public class MemberServiceImpl implements MemberService {
 
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     private final ObjectMapper objectMapper;
 
@@ -34,12 +34,12 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void register(UserRegisterDTO dto){
+    public void register(MemberRegisterDTO dto){
 
-        userRepository.save(
+        memberRepository.save(
                 dtoToEntity(
-                        UserDTO.builder()
-                                .uid(dto.getUid())
+                        MemberDTO.builder()
+                                .memberId(dto.getMemberId())
                                 .password(dto.getPassword())
                                 .name(dto.getName())
                                 .email(dto.getEmail())
@@ -54,14 +54,14 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public boolean alreadyUserExist(UserRegisterDTO request){
-        return userRepository.findById(request.getUid()).isPresent();
+    public boolean alreadyUserExist(MemberRegisterDTO request){
+        return memberRepository.findById(request.getMemberId()).isPresent();
     }
 
 
     @Override
-    public UserIdNameDTO authenticate(UserAuthDTO request){
-        return userRepository.findById(request.getUid())
+    public MemberIdNameDTO authenticate(MemberAuthDTO request){
+        return memberRepository.findById(request.getMemberId())
                 .filter(user -> user.getPassword().equals(request.getPassword()))
                 .map(this::entityToUserIdNameDto).orElse(null);
     }
@@ -93,8 +93,8 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public UserDTO getUserInfoById(String uid){
-        return userRepository.findById(uid).map(this::entityToDto).orElse(null);
+    public MemberDTO getUserInfoById(String uid){
+        return memberRepository.findById(uid).map(this::entityToDto).orElse(null);
     }
 
 }
