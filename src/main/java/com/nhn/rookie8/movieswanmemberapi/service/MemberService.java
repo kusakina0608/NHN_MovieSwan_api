@@ -14,11 +14,11 @@ public interface MemberService {
 
     void register(MemberRegisterDTO dto);
 
-    boolean alreadyUserExist(MemberRegisterDTO request);
+    boolean alreadyMemberExist(MemberRegisterDTO request);
 
     MemberIdNameDTO authenticate(MemberAuthDTO request);
 
-    MemberDTO getUserInfoById(String uid);
+    MemberDTO getMemberInfoById(String memberId);
 
     ResponseDTO responseWithContent(ErrorCode errorCode, Object content);
 
@@ -49,7 +49,7 @@ public interface MemberService {
                 .build();
     }
 
-    default MemberIdNameDTO entityToUserIdNameDto(Member entity){
+    default MemberIdNameDTO entityToMemberIdNameDto(Member entity){
 
         return MemberIdNameDTO.builder()
                 .memberId(entity.getMemberId())

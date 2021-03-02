@@ -54,7 +54,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public boolean alreadyUserExist(MemberRegisterDTO request){
+    public boolean alreadyMemberExist(MemberRegisterDTO request){
         return memberRepository.findById(request.getMemberId()).isPresent();
     }
 
@@ -62,8 +62,8 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberIdNameDTO authenticate(MemberAuthDTO request){
         return memberRepository.findById(request.getMemberId())
-                .filter(user -> user.getPassword().equals(request.getPassword()))
-                .map(this::entityToUserIdNameDto).orElse(null);
+                .filter(member -> member.getPassword().equals(request.getPassword()))
+                .map(this::entityToMemberIdNameDto).orElse(null);
     }
 
 
@@ -93,8 +93,8 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public MemberDTO getUserInfoById(String uid){
-        return memberRepository.findById(uid).map(this::entityToDto).orElse(null);
+    public MemberDTO getMemberInfoById(String memberId){
+        return memberRepository.findById(memberId).map(this::entityToDto).orElse(null);
     }
 
 }

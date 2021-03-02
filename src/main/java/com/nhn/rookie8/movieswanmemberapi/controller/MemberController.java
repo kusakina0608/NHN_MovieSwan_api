@@ -30,7 +30,7 @@ public class MemberController {
             throw new InputErrorException();
         }
 
-        if(memberService.alreadyUserExist(request)){
+        if(memberService.alreadyMemberExist(request)){
             throw new IdOrPasswordErrorException();
         }
 
@@ -57,14 +57,14 @@ public class MemberController {
     }
 
 
-    @PostMapping("/getUserInfo")
-    public ResponseDTO getUserInfo(@RequestBody MemberIdDTO request) {
+    @PostMapping("/getMemberInfo")
+    public ResponseDTO getMemberInfo(@RequestBody MemberIdDTO request) {
 
         if(!memberService.check(request)){
             throw new InputErrorException();
         }
 
-        MemberDTO memberDTO = memberService.getUserInfoById(request.getMemberId());
+        MemberDTO memberDTO = memberService.getMemberInfoById(request.getMemberId());
 
         if(memberDTO == null){
             throw new IdOrPasswordErrorException();
@@ -76,13 +76,13 @@ public class MemberController {
 
 
     @GetMapping("/isExistId")
-    public ResponseDTO isExistId(@RequestParam String uid) {
+    public ResponseDTO isExistId(@RequestParam String memberId) {
 
-        if(memberService.checkString(uid)){
+        if(memberService.checkString(memberId)){
             throw new InputErrorException();
         }
 
-        if(memberService.getUserInfoById(uid) != null){
+        if(memberService.getMemberInfoById(memberId) != null){
             throw new IdOrPasswordErrorException();
         }
 
