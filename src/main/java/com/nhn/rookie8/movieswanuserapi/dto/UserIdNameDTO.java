@@ -1,6 +1,5 @@
 package com.nhn.rookie8.movieswanuserapi.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,16 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserBasicDTO {
+public class UserIdNameDTO {
 
     private String uid;
 
-    private String password;
-
     private String name;
-
-    private String email;
-
-    private String url;
-
 }

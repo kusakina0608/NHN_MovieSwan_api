@@ -24,7 +24,7 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public ResponseDTO register(@RequestBody UserBasicDTO request) {
+    public ResponseDTO register(@RequestBody UserRegisterDTO request) {
 
         if(!userService.check(request)){
             throw new InputErrorException();
@@ -47,11 +47,13 @@ public class UserController {
             throw new InputErrorException();
         }
 
-        if(!userService.authenticate(request)){
+        UserIdNameDTO userIdNameDTO = userService.authenticate(request);
+
+        if(userIdNameDTO == null){
             throw new IdOrPasswordErrorException();
         }
 
-        return userService.responseWithoutContent(ErrorCode.NO_ERROR);
+        return userService.responseWithContent(ErrorCode.NO_ERROR, userIdNameDTO);
     }
 
 

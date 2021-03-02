@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void register(UserBasicDTO dto){
+    public void register(UserRegisterDTO dto){
 
         userRepository.save(
                 dtoToEntity(
@@ -52,15 +52,18 @@ public class UserServiceImpl implements UserService{
 
     }
 
+
     @Override
-    public boolean alreadyUserExist(UserBasicDTO request){
+    public boolean alreadyUserExist(UserRegisterDTO request){
         return userRepository.findById(request.getUid()).isPresent();
     }
 
+
     @Override
-    public boolean authenticate(UserAuthDTO request){
+    public UserIdNameDTO authenticate(UserAuthDTO request){
         return userRepository.findById(request.getUid())
-                .filter(user -> user.getPassword().equals(request.getPassword())).isPresent();
+                .filter(user -> user.getPassword().equals(request.getPassword()))
+                .map(this::entityToUserIdNameDto).orElse(null);
     }
 
 
@@ -76,6 +79,7 @@ public class UserServiceImpl implements UserService{
                 .build();
     }
 
+
     @Override
     public ResponseDTO responseWithoutContent(ErrorCode errorCode){
 
@@ -86,6 +90,7 @@ public class UserServiceImpl implements UserService{
                 .message(errorCode.getMessage())
                 .build();
     }
+
 
     @Override
     public UserDTO getUserInfoById(String uid){

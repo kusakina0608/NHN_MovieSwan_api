@@ -12,18 +12,17 @@ public interface UserService {
 
     boolean checkString(String request);
 
-    void register(UserBasicDTO dto);
+    void register(UserRegisterDTO dto);
 
-    boolean alreadyUserExist(UserBasicDTO request);
+    boolean alreadyUserExist(UserRegisterDTO request);
 
-    boolean authenticate(UserAuthDTO request);
+    UserIdNameDTO authenticate(UserAuthDTO request);
 
     UserDTO getUserInfoById(String uid);
 
     ResponseDTO responseWithContent(ErrorCode errorCode, Object content);
 
     ResponseDTO responseWithoutContent(ErrorCode errorCode);
-
 
     default User dtoToEntity(UserDTO dto){
         return User.builder()
@@ -47,6 +46,14 @@ public interface UserService {
                 .url(entity.getUrl())
                 .regDate(entity.getRegDate())
                 .modDate(entity.getModDate())
+                .build();
+    }
+
+    default UserIdNameDTO entityToUserIdNameDto(User entity){
+
+        return UserIdNameDTO.builder()
+                .uid(entity.getUid())
+                .name(entity.getName())
                 .build();
     }
 }
