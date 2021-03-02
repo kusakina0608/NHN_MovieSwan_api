@@ -76,7 +76,7 @@ public class UserController {
     @GetMapping("/isExistId")
     public ResponseDTO isExistId(@RequestParam String uid) {
 
-        if(userService.check(uid)){
+        if(userService.checkString(uid)){
             throw new InputErrorException();
         }
 

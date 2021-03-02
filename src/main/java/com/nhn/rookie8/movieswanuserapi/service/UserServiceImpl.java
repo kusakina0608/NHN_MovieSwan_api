@@ -1,5 +1,7 @@
 package com.nhn.rookie8.movieswanuserapi.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhn.rookie8.movieswanuserapi.dto.*;
 import com.nhn.rookie8.movieswanuserapi.repository.UserRepository;
 import com.nhn.rookie8.movieswanuserapi.userenum.ErrorCode;
@@ -8,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -16,29 +19,17 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
 
+    private final ObjectMapper objectMapper;
 
     @Override
-    public boolean check(UserBasicDTO request) {
-        return request.getUid() != null && !request.getUid().trim().isEmpty()
-                && request.getPassword() != null && !request.getPassword().trim().isEmpty()
-                && request.getName() != null && !request.getName().trim().isEmpty()
-                && request.getEmail() != null && !request.getEmail().trim().isEmpty()
-                && request.getUrl() != null && !request.getUrl().trim().isEmpty();
+    public boolean check(Object request){
+        return objectMapper.convertValue(request, new TypeReference<Map<String,String>>() {})
+                .values().stream().allMatch(this::checkString);
     }
 
-    @Override
-    public boolean check(UserAuthDTO request) {
-        return request.getUid() != null && !request.getUid().trim().isEmpty()
-                && request.getPassword() != null && !request.getPassword().trim().isEmpty();
-    }
 
     @Override
-    public boolean check(UserIdDTO request) {
-        return request.getUid() != null && !request.getUid().trim().isEmpty();
-    }
-
-    @Override
-    public boolean check(String request) {
+    public boolean checkString(String request) {
         return request != null && !request.trim().isEmpty();
     }
 

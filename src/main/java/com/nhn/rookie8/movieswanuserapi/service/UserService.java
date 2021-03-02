@@ -8,14 +8,9 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserService {
 
+    boolean check(Object request);
 
-    boolean check(UserBasicDTO request);
-
-    boolean check(UserAuthDTO request);
-
-    boolean check(UserIdDTO request);
-
-    boolean check(String request);
+    boolean checkString(String request);
 
     void register(UserBasicDTO dto);
 
