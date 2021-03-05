@@ -29,9 +29,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public boolean checkString(String request) {
-        return request != null && !request.trim().isEmpty();
-    }
+    public boolean checkString(String request) { return request != null && !request.trim().isEmpty(); }
 
     @Override
     public void register(MemberRegisterDTO dto){
