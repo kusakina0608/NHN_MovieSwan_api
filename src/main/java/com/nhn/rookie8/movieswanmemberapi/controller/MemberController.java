@@ -78,7 +78,7 @@ public class MemberController {
     @GetMapping("/isExistId")
     public ResponseDTO isExistId(@RequestParam String memberId) {
 
-        if(memberService.checkString(memberId)){
+        if(!memberService.checkString(memberId)){
             throw new InputErrorException();
         }
 
