@@ -255,9 +255,6 @@ class MemberControllerTests {
 
 
         //scenario 2
-        System.out.println("@#!");
-        System.out.println(dummyMemberIdList.get(2));
-        System.out.println("@#!");
         when(memberService.checkString(dummyMemberIdList.get(2))).thenReturn(true);
         when(memberService.getMemberInfoById(dummyMemberIdList.get(2))).thenReturn(dummyMemberDTOList.get(2));
 
