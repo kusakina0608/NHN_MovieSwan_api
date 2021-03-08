@@ -22,8 +22,8 @@ public class MemberServiceImpl implements MemberService {
     private final ObjectMapper objectMapper;
 
     @Override
-    public boolean check(Object request){
-        return objectMapper.convertValue(request, new TypeReference<Map<String,String>>() {})
+    public boolean checkInput(Object request){
+        return request != null && objectMapper.convertValue(request, new TypeReference<Map<String,String>>() {})
                 .values().stream().allMatch(this::checkString);
     }
 

@@ -3,7 +3,6 @@ package com.nhn.rookie8.movieswanmemberapi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhn.rookie8.movieswanmemberapi.dto.*;
 import com.nhn.rookie8.movieswanmemberapi.memberenum.ErrorCode;
-import com.nhn.rookie8.movieswanmemberapi.repository.MemberRepository;
 import com.nhn.rookie8.movieswanmemberapi.service.MemberService;
 import lombok.extern.log4j.Log4j2;
 import org.jeasy.random.EasyRandom;
@@ -38,9 +37,6 @@ class MemberControllerTests {
     ObjectMapper objectMapper;
 
     EasyRandom generator;
-
-    @MockBean
-    private MemberRepository memberRepository;
 
     @MockBean
     private MemberService memberService;
@@ -85,7 +81,7 @@ class MemberControllerTests {
     void registerTest() throws Exception {
 
         //scenario 1
-        when(memberService.check(dummyMemberRegisterDTOList.get(1))).thenReturn(false);
+        when(memberService.checkInput(dummyMemberRegisterDTOList.get(1))).thenReturn(false);
 
         RequestBuilder requestBuilder1 = MockMvcRequestBuilders
                 .post("/api/register")
@@ -95,11 +91,11 @@ class MemberControllerTests {
 
         MvcResult mvcResult1 = mockMvc.perform(requestBuilder1).andDo(print()).andReturn();
 
-        Assertions.assertEquals(mvcResult1.getResponse().getContentAsString(), "", "ok");
+        Assertions.assertEquals("", mvcResult1.getResponse().getContentAsString(), "ok");
 
 
         //scenario 2
-        when(memberService.check(dummyMemberRegisterDTOList.get(2))).thenReturn(true);
+        when(memberService.checkInput(dummyMemberRegisterDTOList.get(2))).thenReturn(true);
         when(memberService.alreadyMemberExist(dummyMemberRegisterDTOList.get(2))).thenReturn(true);
 
         RequestBuilder requestBuilder2 = MockMvcRequestBuilders
@@ -110,11 +106,11 @@ class MemberControllerTests {
 
         MvcResult mvcResult2 = mockMvc.perform(requestBuilder2).andDo(print()).andReturn();
 
-        Assertions.assertEquals(mvcResult2.getResponse().getContentAsString(), "", "ok");
+        Assertions.assertEquals("", mvcResult2.getResponse().getContentAsString(), "ok");
 
 
         //scenario 3
-        when(memberService.check(dummyMemberRegisterDTOList.get(3))).thenReturn(true);
+        when(memberService.checkInput(dummyMemberRegisterDTOList.get(3))).thenReturn(true);
         when(memberService.alreadyMemberExist(dummyMemberRegisterDTOList.get(3))).thenReturn(false);
         when(memberService.responseWithoutContent(ErrorCode.NO_ERROR)).thenReturn(dummyResponseDTOList.get(3));
 
@@ -129,14 +125,14 @@ class MemberControllerTests {
         ResponseDTO responseDTO3 =
                 objectMapper.readValue(mvcResult3.getResponse().getContentAsString(), ResponseDTO.class);
 
-        Assertions.assertEquals(responseDTO3, dummyResponseDTOList.get(3), "ok");
+        Assertions.assertEquals(dummyResponseDTOList.get(3), responseDTO3, "ok");
     }
 
     @Test
     void authTest() throws Exception {
 
         //scenario 1
-        when(memberService.check(dummyMemberAuthDTOList.get(1))).thenReturn(false);
+        when(memberService.checkInput(dummyMemberAuthDTOList.get(1))).thenReturn(false);
 
         RequestBuilder requestBuilder1 = MockMvcRequestBuilders
                 .post("/api/auth")
@@ -146,11 +142,11 @@ class MemberControllerTests {
 
         MvcResult mvcResult1 = mockMvc.perform(requestBuilder1).andDo(print()).andReturn();
 
-        Assertions.assertEquals(mvcResult1.getResponse().getContentAsString(), "", "ok");
+        Assertions.assertEquals("", mvcResult1.getResponse().getContentAsString(), "ok");
 
 
         //scenario 2
-        when(memberService.check(dummyMemberAuthDTOList.get(2))).thenReturn(true);
+        when(memberService.checkInput(dummyMemberAuthDTOList.get(2))).thenReturn(true);
         when(memberService.authenticate(dummyMemberAuthDTOList.get(2))).thenReturn(null);
 
         RequestBuilder requestBuilder2 = MockMvcRequestBuilders
@@ -161,11 +157,11 @@ class MemberControllerTests {
 
         MvcResult mvcResult2 = mockMvc.perform(requestBuilder2).andDo(print()).andReturn();
 
-        Assertions.assertEquals(mvcResult2.getResponse().getContentAsString(), "", "ok");
+        Assertions.assertEquals("", mvcResult2.getResponse().getContentAsString(), "ok");
 
 
         //scenario 3
-        when(memberService.check(dummyMemberAuthDTOList.get(3))).thenReturn(true);
+        when(memberService.checkInput(dummyMemberAuthDTOList.get(3))).thenReturn(true);
         when(memberService.authenticate(dummyMemberAuthDTOList.get(3))).thenReturn(dummyMemberIdNameDTOList.get(3));
         when(memberService.responseWithContent(ErrorCode.NO_ERROR,dummyMemberIdNameDTOList.get(3)))
                 .thenReturn(dummyResponseDTOList.get(3));
@@ -181,14 +177,14 @@ class MemberControllerTests {
         ResponseDTO responseDTO3 =
                 objectMapper.readValue(mvcResult3.getResponse().getContentAsString(), ResponseDTO.class);
 
-        Assertions.assertEquals(responseDTO3, dummyResponseDTOList.get(3), "ok");
+        Assertions.assertEquals(dummyResponseDTOList.get(3), responseDTO3, "ok");
     }
 
     @Test
     void getMemberInfoTest() throws Exception {
 
         //scenario 1
-        when(memberService.check(dummyMemberIdDTOList.get(1))).thenReturn(false);
+        when(memberService.checkInput(dummyMemberIdDTOList.get(1))).thenReturn(false);
 
         RequestBuilder requestBuilder1 = MockMvcRequestBuilders
                 .post("/api/getMemberInfo")
@@ -198,11 +194,11 @@ class MemberControllerTests {
 
         MvcResult mvcResult1 = mockMvc.perform(requestBuilder1).andDo(print()).andReturn();
 
-        Assertions.assertEquals(mvcResult1.getResponse().getContentAsString(), "", "ok");
+        Assertions.assertEquals("", mvcResult1.getResponse().getContentAsString(), "ok");
 
 
         //scenario 2
-        when(memberService.check(dummyMemberIdDTOList.get(2))).thenReturn(true);
+        when(memberService.checkInput(dummyMemberIdDTOList.get(2))).thenReturn(true);
         when(memberService.getMemberInfoById(dummyMemberIdDTOList.get(2).getMemberId())).thenReturn(null);
 
         RequestBuilder requestBuilder2 = MockMvcRequestBuilders
@@ -213,11 +209,11 @@ class MemberControllerTests {
 
         MvcResult mvcResult2 = mockMvc.perform(requestBuilder2).andDo(print()).andReturn();
 
-        Assertions.assertEquals(mvcResult2.getResponse().getContentAsString(), "", "ok");
+        Assertions.assertEquals("", mvcResult2.getResponse().getContentAsString(), "ok");
 
 
         //scenario 3
-        when(memberService.check(dummyMemberIdDTOList.get(3))).thenReturn(true);
+        when(memberService.checkInput(dummyMemberIdDTOList.get(3))).thenReturn(true);
         when(memberService.getMemberInfoById(dummyMemberIdDTOList.get(3).getMemberId()))
                 .thenReturn(dummyMemberDTOList.get(3));
         when(memberService.responseWithContent(ErrorCode.NO_ERROR,dummyMemberDTOList.get(3)))
@@ -234,7 +230,7 @@ class MemberControllerTests {
         ResponseDTO responseDTO3 =
                 objectMapper.readValue(mvcResult3.getResponse().getContentAsString(), ResponseDTO.class);
 
-        Assertions.assertEquals(responseDTO3, dummyResponseDTOList.get(3), "ok");
+        Assertions.assertEquals(dummyResponseDTOList.get(3), responseDTO3, "ok");
 
     }
 
@@ -251,7 +247,7 @@ class MemberControllerTests {
 
         MvcResult mvcResult1 = mockMvc.perform(requestBuilder1).andDo(print()).andReturn();
 
-        Assertions.assertEquals(mvcResult1.getResponse().getContentAsString(), "", "ok");
+        Assertions.assertEquals("", mvcResult1.getResponse().getContentAsString(), "ok");
 
 
         //scenario 2
@@ -263,7 +259,7 @@ class MemberControllerTests {
 
         MvcResult mvcResult2 = mockMvc.perform(requestBuilder2).andDo(print()).andReturn();
 
-        Assertions.assertEquals(mvcResult2.getResponse().getContentAsString(), "", "ok");
+        Assertions.assertEquals("", mvcResult2.getResponse().getContentAsString(), "ok");
 
 
         //scenario 3
@@ -280,7 +276,7 @@ class MemberControllerTests {
         ResponseDTO responseDTO3 =
                 objectMapper.readValue(mvcResult3.getResponse().getContentAsString(), ResponseDTO.class);
 
-        Assertions.assertEquals(responseDTO3, dummyResponseDTOList.get(3), "ok");
+        Assertions.assertEquals(dummyResponseDTOList.get(3), responseDTO3, "ok");
     }
 }
 

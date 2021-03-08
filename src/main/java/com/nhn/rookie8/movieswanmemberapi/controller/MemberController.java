@@ -26,7 +26,7 @@ public class MemberController {
     @PostMapping("/register")
     public ResponseDTO register(@RequestBody MemberRegisterDTO request) {
 
-        if(!memberService.check(request)){
+        if(!memberService.checkInput(request)){
             throw new InputErrorException();
         }
 
@@ -43,7 +43,7 @@ public class MemberController {
     @PostMapping("/auth")
     public ResponseDTO auth(@RequestBody MemberAuthDTO request) {
 
-        if(!memberService.check(request)){
+        if(!memberService.checkInput(request)){
             throw new InputErrorException();
         }
 
@@ -60,7 +60,7 @@ public class MemberController {
     @PostMapping("/getMemberInfo")
     public ResponseDTO getMemberInfo(@RequestBody MemberIdDTO request) {
 
-        if(!memberService.check(request)){
+        if(!memberService.checkInput(request)){
             throw new InputErrorException();
         }
 
