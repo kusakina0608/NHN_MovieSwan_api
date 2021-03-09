@@ -12,6 +12,8 @@ public interface MemberService {
 
     boolean checkString(String request);
 
+    String getToken(String memberId);
+
     void register(MemberRegisterDTO dto);
 
     boolean alreadyMemberExist(MemberRegisterDTO request);

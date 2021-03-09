@@ -49,13 +49,32 @@ public class MemberController {
 
         MemberIdNameDTO memberIdNameDTO = memberService.authenticate(request);
 
-        if(memberIdNameDTO == null){
-            throw new IdOrPasswordErrorException();
-        }
-
         return memberService.responseWithContent(ErrorCode.NO_ERROR, memberIdNameDTO);
     }
 
+    @PostMapping("/token")
+    public ResponseDTO token(@RequestBody MemberAuthDTO request) {
+
+        if(!memberService.checkInput(request)){
+            throw new InputErrorException();
+        }
+
+        String redirectUrl = "http://dev-movieswan.nhn.com/member/login_process?token=";
+
+        MemberIdNameDTO memberIdNameDTO = memberService.authenticate(request);
+        String token = memberService.getToken(memberIdNameDTO.getMemberId());
+
+        TokenDTO tokenDTO = TokenDTO.builder()
+                .url(redirectUrl + token)
+                .build();
+
+        return memberService.responseWithContent(ErrorCode.NO_ERROR, tokenDTO);
+    }
+
+    @PostMapping("/verifyToken")
+    public ResponseDTO verifyToken(@RequestBody MemberAuthDTO request) {
+        return memberService.responseWithContent(ErrorCode.NO_ERROR, memberService.authenticate(request));
+    }
 
     @PostMapping("/getMemberInfo")
     public ResponseDTO getMemberInfo(@RequestBody MemberIdDTO request) {
