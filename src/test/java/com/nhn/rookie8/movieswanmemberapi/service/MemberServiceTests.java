@@ -130,7 +130,7 @@ public class MemberServiceTests {
         when(memberRepository.findById(dummyMemberRegisterDTOList.get(1).getMemberId()))
                 .thenReturn(Optional.of(generator.nextObject(Member.class)));
 
-        boolean testToBeTrue1 = memberService.alreadyMemberExist(dummyMemberRegisterDTOList.get(1));
+        boolean testToBeTrue1 = memberService.alreadyMemberExist(dummyMemberRegisterDTOList.get(1).getMemberId());
 
         Assertions.assertEquals(true, testToBeTrue1, "ok");
 
@@ -138,7 +138,7 @@ public class MemberServiceTests {
         //scenario 2
         when(memberRepository.findById(dummyMemberRegisterDTOList.get(2).getMemberId())).thenReturn(Optional.empty());
 
-        boolean testToBeFalse1 = memberService.alreadyMemberExist(dummyMemberRegisterDTOList.get(2));
+        boolean testToBeFalse1 = memberService.alreadyMemberExist(dummyMemberRegisterDTOList.get(2).getMemberId());
 
         Assertions.assertEquals(false, testToBeFalse1, "ok");
     }

@@ -83,8 +83,8 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public boolean alreadyMemberExist(MemberRegisterDTO request){
-        return memberRepository.findById(request.getMemberId()).isPresent();
+    public boolean alreadyMemberExist(String memberId){
+        return memberRepository.findById(memberId).isPresent();
     }
 
 
@@ -123,7 +123,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDTO getMemberInfoById(String memberId){
-        return memberRepository.findById(memberId).map(this::entityToDto).orElse(null);
+        return memberRepository.findById(memberId).map(this::entityToDto).orElseThrow(IdOrPasswordErrorException::new);
     }
 
 }

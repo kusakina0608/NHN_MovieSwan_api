@@ -16,7 +16,7 @@ public interface MemberService {
 
     void register(MemberRegisterDTO dto);
 
-    boolean alreadyMemberExist(MemberRegisterDTO request);
+    boolean alreadyMemberExist(String memberId);
 
     MemberIdNameDTO authenticate(MemberAuthDTO request);
 

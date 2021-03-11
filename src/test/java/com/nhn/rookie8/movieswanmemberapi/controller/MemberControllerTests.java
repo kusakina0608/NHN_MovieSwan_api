@@ -96,7 +96,7 @@ class MemberControllerTests {
 
         //scenario 2
         when(memberService.checkInput(dummyMemberRegisterDTOList.get(2))).thenReturn(true);
-        when(memberService.alreadyMemberExist(dummyMemberRegisterDTOList.get(2))).thenReturn(true);
+        when(memberService.alreadyMemberExist(dummyMemberRegisterDTOList.get(2).getMemberId())).thenReturn(true);
 
         RequestBuilder requestBuilder2 = MockMvcRequestBuilders
                 .post("/api/register")
@@ -111,7 +111,7 @@ class MemberControllerTests {
 
         //scenario 3
         when(memberService.checkInput(dummyMemberRegisterDTOList.get(3))).thenReturn(true);
-        when(memberService.alreadyMemberExist(dummyMemberRegisterDTOList.get(3))).thenReturn(false);
+        when(memberService.alreadyMemberExist(dummyMemberRegisterDTOList.get(3).getMemberId())).thenReturn(false);
         when(memberService.responseWithoutContent(ErrorCode.NO_ERROR)).thenReturn(dummyResponseDTOList.get(3));
 
         RequestBuilder requestBuilder3 = MockMvcRequestBuilders

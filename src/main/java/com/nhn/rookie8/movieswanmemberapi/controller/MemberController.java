@@ -30,7 +30,7 @@ public class MemberController {
             throw new InputErrorException();
         }
 
-        if(memberService.alreadyMemberExist(request)){
+        if(memberService.alreadyMemberExist(request.getMemberId())){
             throw new IdOrPasswordErrorException();
         }
 
@@ -85,10 +85,6 @@ public class MemberController {
 
         MemberDTO memberDTO = memberService.getMemberInfoById(request.getMemberId());
 
-        if(memberDTO == null){
-            throw new IdOrPasswordErrorException();
-        }
-
         return memberService.responseWithContent(ErrorCode.NO_ERROR, memberDTO);
     }
 
@@ -101,7 +97,7 @@ public class MemberController {
             throw new InputErrorException();
         }
 
-        if(memberService.getMemberInfoById(memberId) != null){
+        if(memberService.alreadyMemberExist(memberId)){
             throw new IdOrPasswordErrorException();
         }
 
