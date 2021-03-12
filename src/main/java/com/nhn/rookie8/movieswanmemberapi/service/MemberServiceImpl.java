@@ -11,6 +11,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,9 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
     private final ObjectMapper objectMapper;
+
+    @Value("${redirectUrl}")
+    String redirectUrl;
 
     @Override
     public boolean checkInput(Object request){
@@ -118,6 +122,12 @@ public class MemberServiceImpl implements MemberService {
                 .errorCode(errorCode.ordinal())
                 .message(errorCode.getMessage())
                 .build();
+    }
+
+
+    @Override
+    public TokenDTO responseWithToken(String url){
+        return TokenDTO.builder().url(redirectUrl + "?token=" + url).build();
     }
 
 
