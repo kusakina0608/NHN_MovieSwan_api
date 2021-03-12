@@ -53,22 +53,15 @@ public class MemberController {
     }
 
     @PostMapping("/token")
-    public ResponseDTO token(@RequestBody MemberAuthDTO request) {
+    public TokenDTO token(@RequestBody MemberAuthDTO request) {
 
         if(!memberService.checkInput(request)){
             throw new InputErrorException();
         }
 
-        String redirectUrl = "http://dev-movieswan.nhn.com/member/login_process?token=";
-
         MemberIdNameDTO memberIdNameDTO = memberService.authenticate(request);
-        String token = memberService.getToken(memberIdNameDTO.getMemberId());
 
-        TokenDTO tokenDTO = TokenDTO.builder()
-                .url(redirectUrl + token)
-                .build();
-
-        return memberService.responseWithContent(ErrorCode.NO_ERROR, tokenDTO);
+        return memberService.responseWithToken(memberService.getToken(memberIdNameDTO.getMemberId()));
     }
 
     @PostMapping("/verifyToken")
