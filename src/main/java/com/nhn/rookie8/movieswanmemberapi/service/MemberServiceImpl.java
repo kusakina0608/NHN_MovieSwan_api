@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhn.rookie8.movieswanmemberapi.datasource.DatabaseSelector;
 import com.nhn.rookie8.movieswanmemberapi.dto.*;
-import com.nhn.rookie8.movieswanmemberapi.entity.Member;
-import com.nhn.rookie8.movieswanmemberapi.memberexception.IdOrPasswordErrorException;
-import com.nhn.rookie8.movieswanmemberapi.repository.MemberRepository;
 import com.nhn.rookie8.movieswanmemberapi.memberenum.ErrorCode;
+import com.nhn.rookie8.movieswanmemberapi.memberexception.IdOrPasswordErrorException;
+import com.nhn.rookie8.movieswanmemberapi.memberexception.UnauthorizedException;
+import com.nhn.rookie8.movieswanmemberapi.repository.MemberRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -109,6 +108,15 @@ public class MemberServiceImpl implements MemberService {
                 .map(this::entityToMemberIdNameDto).orElseThrow(IdOrPasswordErrorException::new);
     }
 
+    @Override
+    @Synchronized
+    public MemberIdNameDTO externalAuthenticate(MemberAuthDTO request){
+        databaseSelector.setDbIndicator(request.getMemberId());
+        return memberRepository.findById(request.getMemberId())
+                .filter(member -> member.getPassword().equals(request.getPassword()))
+                .map(this::entityToMemberIdNameDto).orElseThrow(UnauthorizedException::new);
+    }
+
 
     @Override
     public ResponseDTO responseWithContent(ErrorCode errorCode, Object content){
@@ -146,6 +154,14 @@ public class MemberServiceImpl implements MemberService {
     public MemberDTO getMemberInfoById(String memberId){
         databaseSelector.setDbIndicator(memberId);
         return memberRepository.findById(memberId).map(this::entityToDto).orElseThrow(IdOrPasswordErrorException::new);
+    }
+
+
+    @Override
+    public MemberIdNameDTO getMemberIdNameDTO(String memberId) {
+        return memberRepository.findById(memberId).isPresent() ?
+                entityToMemberIdNameDto(memberRepository.findById(memberId).get()) :
+                null;
     }
 
 }

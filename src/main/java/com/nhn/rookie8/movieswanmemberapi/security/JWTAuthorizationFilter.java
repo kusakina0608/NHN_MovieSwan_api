@@ -26,6 +26,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                 Claims claims = validateToken(request);
                 if (claims.get("authorities") != null) {
                     setUpSpringAuthentication(claims);
+                    request.setAttribute("memberId", claims.get("sub"));
                 } else {
                     SecurityContextHolder.clearContext();
                 }

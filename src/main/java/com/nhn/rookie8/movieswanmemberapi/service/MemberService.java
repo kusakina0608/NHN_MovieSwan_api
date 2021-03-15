@@ -20,6 +20,8 @@ public interface MemberService {
 
     MemberIdNameDTO authenticate(MemberAuthDTO request);
 
+    MemberIdNameDTO externalAuthenticate(MemberAuthDTO request);
+
     MemberDTO getMemberInfoById(String memberId);
 
     ResponseDTO responseWithContent(ErrorCode errorCode, Object content);
@@ -27,6 +29,8 @@ public interface MemberService {
     ResponseDTO responseWithoutContent(ErrorCode errorCode);
 
     TokenDTO responseWithToken(String url);
+
+    MemberIdNameDTO getMemberIdNameDTO(String memberId);
 
     default Member dtoToEntity(MemberDTO dto){
         return Member.builder()
