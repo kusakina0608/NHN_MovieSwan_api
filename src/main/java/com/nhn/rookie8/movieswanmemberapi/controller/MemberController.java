@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 
 
 @RequiredArgsConstructor
@@ -41,19 +42,7 @@ public class MemberController {
 
 
     @PostMapping("/auth")
-    public ResponseDTO auth(@RequestBody MemberAuthDTO request) {
-
-        if(!memberService.checkInput(request)){
-            throw new InputErrorException();
-        }
-
-        MemberIdNameDTO memberIdNameDTO = memberService.authenticate(request);
-
-        return memberService.responseWithContent(ErrorCode.NO_ERROR, memberIdNameDTO);
-    }
-
-    @PostMapping("/token")
-    public TokenDTO token(@RequestBody MemberAuthDTO request) {
+    public TokenDTO auth(@RequestBody MemberAuthDTO request) {
 
         if(!memberService.checkInput(request)){
             throw new InputErrorException();
@@ -64,9 +53,10 @@ public class MemberController {
         return memberService.responseWithToken(memberService.getToken(memberIdNameDTO.getMemberId()));
     }
 
-    @PostMapping("/verifyToken")
-    public ResponseDTO verifyToken(@RequestBody MemberAuthDTO request) {
-        return memberService.responseWithContent(ErrorCode.NO_ERROR, memberService.authenticate(request));
+    @GetMapping("/verifyToken")
+    public ResponseDTO verifyToken(HttpServletRequest request) {
+        return memberService.responseWithContent(ErrorCode.NO_ERROR,
+                memberService.getMemberIdNameDTO((String) request.getAttribute("memberId")));
     }
 
     @PostMapping("/getMemberInfo")
