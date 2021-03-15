@@ -19,7 +19,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/auth").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/token").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/getMemberInfo").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/isExistId").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/isExistId").permitAll()
                 .anyRequest().authenticated();
     }
 }
