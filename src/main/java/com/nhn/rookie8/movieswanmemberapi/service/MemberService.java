@@ -20,6 +20,8 @@ public interface MemberService {
 
     MemberIdNameDTO authenticate(MemberAuthDTO request);
 
+    MemberIdNameDTO externalAuthenticate(MemberAuthDTO request);
+
     MemberDTO getMemberInfoById(String memberId);
 
     ResponseDTO responseWithContent(ErrorCode errorCode, Object content);
