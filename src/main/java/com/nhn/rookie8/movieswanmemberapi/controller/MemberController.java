@@ -2,13 +2,13 @@ package com.nhn.rookie8.movieswanmemberapi.controller;
 
 
 import com.nhn.rookie8.movieswanmemberapi.dto.*;
-import com.nhn.rookie8.movieswanmemberapi.service.MemberService;
 import com.nhn.rookie8.movieswanmemberapi.memberenum.ErrorCode;
-import com.nhn.rookie8.movieswanmemberapi.memberexception.*;
-
+import com.nhn.rookie8.movieswanmemberapi.memberexception.BadRequestException;
+import com.nhn.rookie8.movieswanmemberapi.memberexception.IdOrPasswordErrorException;
+import com.nhn.rookie8.movieswanmemberapi.memberexception.InputErrorException;
+import com.nhn.rookie8.movieswanmemberapi.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,11 +44,10 @@ public class MemberController {
     @PostMapping("/auth")
     public TokenDTO auth(@RequestBody MemberAuthDTO request) {
 
-        if(!memberService.checkInput(request)){
-            throw new InputErrorException();
-        }
+        if(!memberService.checkInput(request))
+            throw new BadRequestException();
 
-        MemberIdNameDTO memberIdNameDTO = memberService.authenticate(request);
+        MemberIdNameDTO memberIdNameDTO = memberService.externalAuthenticate(request);
 
         return memberService.responseWithToken(memberService.getToken(memberIdNameDTO.getMemberId()));
     }
