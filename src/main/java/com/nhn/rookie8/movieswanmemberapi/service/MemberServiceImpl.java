@@ -137,7 +137,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public TokenDTO responseWithToken(String url){
-        return TokenDTO.builder().url(redirectUrl + "?token=" + url).build();
+//        return TokenDTO.builder().url(redirectUrl + "?token=" + url).build();
+        return TokenDTO.builder().url("http://localhost:8082/member/login_process" + "?token=" + url).build();
     }
 
 
@@ -146,6 +147,14 @@ public class MemberServiceImpl implements MemberService {
     public MemberDTO getMemberInfoById(String memberId){
         databaseSelector.setDbIndicator(memberId);
         return memberRepository.findById(memberId).map(this::entityToDto).orElseThrow(IdOrPasswordErrorException::new);
+    }
+
+
+    @Override
+    public MemberIdNameDTO getMemberIdNameDTO(String memberId) {
+        return memberRepository.findById(memberId).isPresent() ?
+                entityToMemberIdNameDto(memberRepository.findById(memberId).get()) :
+                null;
     }
 
 }

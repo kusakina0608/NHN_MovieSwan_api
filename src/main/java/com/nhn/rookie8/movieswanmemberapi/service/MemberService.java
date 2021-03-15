@@ -28,6 +28,8 @@ public interface MemberService {
 
     TokenDTO responseWithToken(String url);
 
+    MemberIdNameDTO getMemberIdNameDTO(String memberId);
+
     default Member dtoToEntity(MemberDTO dto){
         return Member.builder()
                 .memberId(dto.getMemberId())
