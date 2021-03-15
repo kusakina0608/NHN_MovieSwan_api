@@ -145,8 +145,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public TokenDTO responseWithToken(String url){
-//        return TokenDTO.builder().url(redirectUrl + "?token=" + url).build();
-        return TokenDTO.builder().url("http://localhost:8082/member/login_process" + "?token=" + url).build();
+        return TokenDTO.builder().url(redirectUrl + "?token=" + url).build();
     }
 
 
