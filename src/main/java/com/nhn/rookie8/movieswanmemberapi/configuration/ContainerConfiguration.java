@@ -1,14 +1,14 @@
-package com.nhn.rookie8.movieswanmemberapi;
+package com.nhn.rookie8.movieswanmemberapi.configuration;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.ajp.AbstractAjpProtocol;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
-@Configuration
-public class ContainerConfig {
+@Import(WebSecurityConfiguration.class)
+public class ContainerConfiguration {
     @Value("${tomcat.ajp.port}")
     int ajpPort;
 

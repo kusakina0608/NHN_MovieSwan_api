@@ -26,7 +26,7 @@ public interface MemberService {
 
     ResponseDTO responseWithoutContent(ErrorCode errorCode);
 
-    public TokenDTO responseWithToken(String url);
+    TokenDTO responseWithToken(String url);
 
     default Member dtoToEntity(MemberDTO dto){
         return Member.builder()
