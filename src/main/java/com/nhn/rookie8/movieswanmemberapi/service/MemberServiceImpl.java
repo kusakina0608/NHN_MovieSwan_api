@@ -2,6 +2,7 @@ package com.nhn.rookie8.movieswanmemberapi.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhn.rookie8.movieswanmemberapi.datasource.DatabaseSelector;
 import com.nhn.rookie8.movieswanmemberapi.dto.*;
 import com.nhn.rookie8.movieswanmemberapi.entity.Member;
 import com.nhn.rookie8.movieswanmemberapi.memberexception.IdOrPasswordErrorException;
@@ -10,12 +11,14 @@ import com.nhn.rookie8.movieswanmemberapi.memberenum.ErrorCode;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +33,8 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
     private final ObjectMapper objectMapper;
+
+    private final DatabaseSelector databaseSelector;
 
     @Value("${redirectUrl}")
     String redirectUrl;
@@ -67,8 +72,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Synchronized
     public void register(MemberRegisterDTO dto){
-
+        databaseSelector.setDbIndicator(dto.getMemberId());
         memberRepository.save(
                 dtoToEntity(
                         MemberDTO.builder()
@@ -87,13 +93,17 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @Synchronized
     public boolean alreadyMemberExist(String memberId){
+        databaseSelector.setDbIndicator(memberId);
         return memberRepository.findById(memberId).isPresent();
     }
 
 
     @Override
+    @Synchronized
     public MemberIdNameDTO authenticate(MemberAuthDTO request){
+        databaseSelector.setDbIndicator(request.getMemberId());
         return memberRepository.findById(request.getMemberId())
                 .filter(member -> member.getPassword().equals(request.getPassword()))
                 .map(this::entityToMemberIdNameDto).orElseThrow(IdOrPasswordErrorException::new);
@@ -132,7 +142,9 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @Synchronized
     public MemberDTO getMemberInfoById(String memberId){
+        databaseSelector.setDbIndicator(memberId);
         return memberRepository.findById(memberId).map(this::entityToDto).orElseThrow(IdOrPasswordErrorException::new);
     }
 
