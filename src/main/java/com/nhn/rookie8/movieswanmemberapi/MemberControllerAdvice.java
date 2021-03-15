@@ -1,6 +1,7 @@
 package com.nhn.rookie8.movieswanmemberapi;
 
 import com.nhn.rookie8.movieswanmemberapi.dto.ResponseDTO;
+import com.nhn.rookie8.movieswanmemberapi.dto.TokenDTO;
 import com.nhn.rookie8.movieswanmemberapi.memberenum.ErrorCode;
 import com.nhn.rookie8.movieswanmemberapi.memberexception.BadRequestException;
 import com.nhn.rookie8.movieswanmemberapi.memberexception.IdOrPasswordErrorException;
@@ -25,11 +26,15 @@ public class MemberControllerAdvice {
 
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadRequestException.class)
-    public void badRequestException(BadRequestException e) { }
+    public TokenDTO badRequestException(BadRequestException e) {
+        return TokenDTO.builder().build();
+    }
 
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnauthorizedException.class)
-    public void unauthorizedException(UnauthorizedException e) { }
+    public TokenDTO unauthorizedException(UnauthorizedException e) {
+        return TokenDTO.builder().build();
+    }
 
     @ExceptionHandler(MemberException.class)
     public ResponseDTO exceptionControl(MemberException e) {
