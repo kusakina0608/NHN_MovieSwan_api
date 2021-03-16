@@ -158,7 +158,9 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @Synchronized
     public MemberIdNameDTO getMemberIdNameDTO(String memberId) {
+        databaseSelector.setDbIndicator(memberId);
         return memberRepository.findById(memberId).isPresent() ?
                 entityToMemberIdNameDto(memberRepository.findById(memberId).get()) :
                 null;
