@@ -16,9 +16,10 @@ public class SecretDataDTO {
 
     @Data
     public static class Ticket {
+        private String secretKey;
         private ObjectStorage objectStorage;
         private Redis redis;
-        private Ticket.Database database;
+        private Database database;
 
         @Data
         public static class Database {
@@ -42,7 +43,8 @@ public class SecretDataDTO {
     @Data
     public static class Account {
 
-        private Account.Database database;
+        private String secretKey;
+        private Database database;
 
         @Data
         public static class Database {
