@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-
+// TODO: 우선순위를 보장하는 데에 다른 방법이 있습니다. 찾아보세요
 @Import(WebSecurityConfiguration.class)
 public class ContainerConfiguration {
     @Value("${tomcat.ajp.port}")

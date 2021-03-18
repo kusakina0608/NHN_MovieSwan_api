@@ -58,19 +58,25 @@ public class MemberServiceImpl implements MemberService {
                 .builder()
                 .setId("MovieSwanJWT")
                 .setSubject(memberId)
+                // 권한을 내장하는 게 가장 좋은 practice 입니다. claim을 의미 있게 구성했다는 점에서 칭찬합니다.
                 .claim("authorities",
                         grantedAuthorities.stream()
                                 .map(GrantedAuthority::getAuthority)
                                 .collect(Collectors.toList()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
+                // TODO: Expiration time 을 짧게 줄일 필요가 있습니다, 상수화 하세요 -> 30 * 60 * 1000, date를 쓰지 않아도 됩니다.
+                // Date 가 mutable 객체이기 때문에...
                 .setExpiration(new Date(System.currentTimeMillis() + 1800000))  // Expiration time: 30 min
+                // 해시 알고리즘을 HS512로 선택한 이유??
                 .signWith(SignatureAlgorithm.HS512,
+                        // TODO: secretKey에서 getBytes를 이용하면 너무 쉽다. 바이트를 난수화시켜서 (Byte Encoding) base64, hex 방식 등
                         secretKey.getBytes()).compact();
 
         return token;
     }
 
     @Override
+    // TODO: 다 지우세요
     @Synchronized
     public void register(MemberRegisterDTO dto){
         databaseSelector.setDbIndicator(dto.getMemberId());
@@ -109,8 +115,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    // TODO: Syncronized 는 필요가 없습니다. 동기화 영역을 길게 잡는 것에 대해 생각을 여러 번 하는 것이 좋습니다.
+    // TODO: ThreadLocal 에 대해 루키들에게 공유해 주면 좋을 것 같습니다.
     @Synchronized
     public MemberIdNameDTO externalAuthenticate(MemberAuthDTO request){
+        // TODO: indicateDB 가 더 좋은 표현입니다, DB indicator 는 비즈니스 로직이 아닙니다. 도메인 로직은 종단 관심사, 성능, 보안과 관련된 부분을 횡단 관심사라고 합니다.
+        // 하마, 여우에서 이 문제를 AOP 라는 기술을 통해 잘 해결했습니다. 필터를 통해 이 문제를 해결해 보았으면 좋겠습니다.
         databaseSelector.setDbIndicator(request.getMemberId());
         return memberRepository.findById(request.getMemberId())
                 .filter(member -> member.getPassword().equals(request.getPassword()))

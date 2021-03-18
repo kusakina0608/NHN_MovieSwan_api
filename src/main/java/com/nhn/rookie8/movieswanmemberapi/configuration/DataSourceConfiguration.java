@@ -29,9 +29,11 @@ public class DataSourceConfiguration {
     SecretDataDTO secretDataDTO;
 
     @Bean
+    // TODO: routingDatasource 로 수정
     public DataSource createRouterDatasource() {
         AbstractRoutingDataSource routingDataSource = new RoutingDataSource();
         Map<Object, Object> targetDataSources = new HashMap<>();
+        // Enum 을 사용하는 게 더 좋습니다.
         targetDataSources.put("swan_account", getDataSource(url1));
         targetDataSources.put("swan_account2", getDataSource(url2));
         routingDataSource.setDefaultTargetDataSource(targetDataSources.get("swan_account"));

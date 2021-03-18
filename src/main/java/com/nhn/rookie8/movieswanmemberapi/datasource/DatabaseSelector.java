@@ -10,6 +10,7 @@ public class DatabaseSelector {
     public static final String DB01 = "swan_account";
     public static final String DB02 = "swan_account2";
 
+    // TODO: ThreadLocal 은 공유 자원이 아닙니다... 수정 필요
     private ThreadLocal<String> contextHolder = new ThreadLocal<>();
     private List<String> databaseKeys = new ArrayList<>();
 
