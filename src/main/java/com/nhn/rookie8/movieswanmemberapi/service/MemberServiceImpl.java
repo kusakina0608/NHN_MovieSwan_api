@@ -96,7 +96,6 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    @Synchronized
     public boolean alreadyMemberExist(String memberId){
         databaseSelector.indicateDB(memberId);
         return memberRepository.findById(memberId).isPresent();
@@ -104,7 +103,6 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    @Synchronized
     public MemberIdNameDTO authenticate(MemberAuthDTO request){
         databaseSelector.indicateDB(request.getMemberId());
         return memberRepository.findById(request.getMemberId())
