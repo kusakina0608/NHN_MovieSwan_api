@@ -76,10 +76,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    // TODO: 다 지우세요
-    @Synchronized
     public void register(MemberRegisterDTO dto){
-        databaseSelector.setDbIndicator(dto.getMemberId());
+        databaseSelector.indicateDB(dto.getMemberId());
         memberRepository.save(
                 dtoToEntity(
                         MemberDTO.builder()
@@ -100,7 +98,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Synchronized
     public boolean alreadyMemberExist(String memberId){
-        databaseSelector.setDbIndicator(memberId);
+        databaseSelector.indicateDB(memberId);
         return memberRepository.findById(memberId).isPresent();
     }
 
@@ -108,20 +106,15 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Synchronized
     public MemberIdNameDTO authenticate(MemberAuthDTO request){
-        databaseSelector.setDbIndicator(request.getMemberId());
+        databaseSelector.indicateDB(request.getMemberId());
         return memberRepository.findById(request.getMemberId())
                 .filter(member -> member.getPassword().equals(request.getPassword()))
                 .map(this::entityToMemberIdNameDto).orElseThrow(IdOrPasswordErrorException::new);
     }
 
     @Override
-    // TODO: Syncronized 는 필요가 없습니다. 동기화 영역을 길게 잡는 것에 대해 생각을 여러 번 하는 것이 좋습니다.
-    // TODO: ThreadLocal 에 대해 루키들에게 공유해 주면 좋을 것 같습니다.
-    @Synchronized
     public MemberIdNameDTO externalAuthenticate(MemberAuthDTO request){
-        // TODO: indicateDB 가 더 좋은 표현입니다, DB indicator 는 비즈니스 로직이 아닙니다. 도메인 로직은 종단 관심사, 성능, 보안과 관련된 부분을 횡단 관심사라고 합니다.
-        // 하마, 여우에서 이 문제를 AOP 라는 기술을 통해 잘 해결했습니다. 필터를 통해 이 문제를 해결해 보았으면 좋겠습니다.
-        databaseSelector.setDbIndicator(request.getMemberId());
+        databaseSelector.indicateDB(request.getMemberId());
         return memberRepository.findById(request.getMemberId())
                 .filter(member -> member.getPassword().equals(request.getPassword()))
                 .map(this::entityToMemberIdNameDto).orElseThrow(UnauthorizedException::new);
@@ -160,17 +153,15 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    @Synchronized
     public MemberDTO getMemberInfoById(String memberId){
-        databaseSelector.setDbIndicator(memberId);
+        databaseSelector.indicateDB(memberId);
         return memberRepository.findById(memberId).map(this::entityToDto).orElseThrow(IdOrPasswordErrorException::new);
     }
 
 
     @Override
-    @Synchronized
     public MemberIdNameDTO getMemberIdNameDTO(String memberId) {
-        databaseSelector.setDbIndicator(memberId);
+        databaseSelector.indicateDB(memberId);
         return memberRepository.findById(memberId).isPresent() ?
                 entityToMemberIdNameDto(memberRepository.findById(memberId).get()) :
                 null;
