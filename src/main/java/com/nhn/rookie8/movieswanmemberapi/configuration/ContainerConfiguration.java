@@ -5,9 +5,11 @@ import org.apache.coyote.ajp.AbstractAjpProtocol;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
-@Import(WebSecurityConfiguration.class)
+@Configuration
+@Order(value=3)
 public class ContainerConfiguration {
     @Value("${tomcat.ajp.port}")
     int ajpPort;

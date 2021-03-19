@@ -34,6 +34,8 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.clearContext();
             }
             chain.doFilter(request, response);
+            // MalformedJweException -> jwt 형식에 맞지 않을 때 발생
+            // ExpiredJwtException -> 시간이 만료되었을 때 발
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
@@ -41,6 +43,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         }
     }
 
+    // jwt 에 대한 명세 파악이 부족했음...
     private Claims validateToken(HttpServletRequest request) {
         String jwtToken = request.getHeader(HEADER);
         return Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();

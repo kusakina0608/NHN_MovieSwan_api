@@ -58,22 +58,26 @@ public class MemberServiceImpl implements MemberService {
                 .builder()
                 .setId("MovieSwanJWT")
                 .setSubject(memberId)
+                // 권한을 내장하는 게 가장 좋은 practice 입니다. claim을 의미 있게 구성했다는 점에서 칭찬합니다.
                 .claim("authorities",
                         grantedAuthorities.stream()
                                 .map(GrantedAuthority::getAuthority)
                                 .collect(Collectors.toList()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
+                // TODO: Expiration time 을 짧게 줄일 필요가 있습니다, 상수화 하세요 -> 30 * 60 * 1000, date를 쓰지 않아도 됩니다.
+                // Date 가 mutable 객체이기 때문에...
                 .setExpiration(new Date(System.currentTimeMillis() + 1800000))  // Expiration time: 30 min
+                // 해시 알고리즘을 HS512로 선택한 이유??
                 .signWith(SignatureAlgorithm.HS512,
+                        // TODO: secretKey에서 getBytes를 이용하면 너무 쉽다. 바이트를 난수화시켜서 (Byte Encoding) base64, hex 방식 등
                         secretKey.getBytes()).compact();
 
         return token;
     }
 
     @Override
-    @Synchronized
     public void register(MemberRegisterDTO dto){
-        databaseSelector.setDbIndicator(dto.getMemberId());
+        databaseSelector.indicateDB(dto.getMemberId());
         memberRepository.save(
                 dtoToEntity(
                         MemberDTO.builder()
@@ -92,26 +96,23 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    @Synchronized
     public boolean alreadyMemberExist(String memberId){
-        databaseSelector.setDbIndicator(memberId);
+        databaseSelector.indicateDB(memberId);
         return memberRepository.findById(memberId).isPresent();
     }
 
 
     @Override
-    @Synchronized
     public MemberIdNameDTO authenticate(MemberAuthDTO request){
-        databaseSelector.setDbIndicator(request.getMemberId());
+        databaseSelector.indicateDB(request.getMemberId());
         return memberRepository.findById(request.getMemberId())
                 .filter(member -> member.getPassword().equals(request.getPassword()))
                 .map(this::entityToMemberIdNameDto).orElseThrow(IdOrPasswordErrorException::new);
     }
 
     @Override
-    @Synchronized
     public MemberIdNameDTO externalAuthenticate(MemberAuthDTO request){
-        databaseSelector.setDbIndicator(request.getMemberId());
+        databaseSelector.indicateDB(request.getMemberId());
         return memberRepository.findById(request.getMemberId())
                 .filter(member -> member.getPassword().equals(request.getPassword()))
                 .map(this::entityToMemberIdNameDto).orElseThrow(UnauthorizedException::new);
@@ -150,17 +151,15 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    @Synchronized
     public MemberDTO getMemberInfoById(String memberId){
-        databaseSelector.setDbIndicator(memberId);
+        databaseSelector.indicateDB(memberId);
         return memberRepository.findById(memberId).map(this::entityToDto).orElseThrow(IdOrPasswordErrorException::new);
     }
 
 
     @Override
-    @Synchronized
     public MemberIdNameDTO getMemberIdNameDTO(String memberId) {
-        databaseSelector.setDbIndicator(memberId);
+        databaseSelector.indicateDB(memberId);
         return memberRepository.findById(memberId).isPresent() ?
                 entityToMemberIdNameDto(memberRepository.findById(memberId).get()) :
                 null;

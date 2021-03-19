@@ -21,7 +21,7 @@ public class DatabaseSelector {
         contextHolder.set(key);
     }
 
-    public void setDbIndicator(String memberId) {
+    public void indicateDB(String memberId) {
         setDataSource(getDbIndicator(memberId));
     }
 

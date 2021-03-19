@@ -1,13 +1,17 @@
 package com.nhn.rookie8.movieswanmemberapi.configuration;
 
 import com.nhn.rookie8.movieswanmemberapi.security.JWTAuthorizationFilter;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@Configuration
 @EnableWebSecurity
+@Order(value=4)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override

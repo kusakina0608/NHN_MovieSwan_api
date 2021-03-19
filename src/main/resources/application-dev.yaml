@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    # Dev DB 1(Master)
+    url1: jdbc:mariadb://10.161.106.72:13306/swan_account
+    # Dev DB 2(Master)
+    url2: jdbc:mariadb://10.161.106.72:13306/swan_account2
+    # Dev DB 1(Slave)
+    # url1: jdbc:mariadb://10.161.106.73:13306/swan_account
+    # Dev DB 2(Slave)
+    # url2: jdbc:mariadb://10.161.106.73:13306/swan_account2
+  jpa:
+    show-sql: true
+
+SKM:
+  appkey: q3dSyEo2SwcTvzZg
+  keyid: 71de30ee6ebd45e0b3e214099cc6212c
+
+redirectUrl: http://dev-movieswan.nhn.com/member/login_process
