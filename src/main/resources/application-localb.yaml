@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    # Dev DB 1(Master)
+    url1: jdbc:mariadb://localhost:3306/swan_account
+    # Dev DB 2(Master)
+    url2: jdbc:mariadb://localhost:3306/swan_account2
+  jpa:
+    show-sql: true
+
+SKM:
+  appkey: q3dSyEo2SwcTvzZg
+  keyid: 71de30ee6ebd45e0b3e214099cc6212c
+
+redirectUrl: http://localhost:8082/member/login_process

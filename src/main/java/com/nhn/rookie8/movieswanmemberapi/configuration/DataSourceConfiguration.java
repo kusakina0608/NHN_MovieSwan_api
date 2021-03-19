@@ -1,7 +1,7 @@
 package com.nhn.rookie8.movieswanmemberapi.configuration;
 
 import com.nhn.rookie8.movieswanmemberapi.datasource.RoutingDataSource;
-import com.nhn.rookie8.movieswanmemberapi.dto.SecretDataDTO;
+import com.nhn.rookie8.movieswanmemberapi.dto.SecretAccountDataDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -28,11 +28,10 @@ public class DataSourceConfiguration {
     private String url2;
 
     @Autowired
-    SecretDataDTO secretDataDTO;
+    SecretAccountDataDTO secretAccountDataDTO;
 
     @Bean
-    // TODO: routingDatasource 로 수정
-    public DataSource createRouterDatasource() {
+    public DataSource routingDatasource() {
         AbstractRoutingDataSource routingDataSource = new RoutingDataSource();
         Map<Object, Object> targetDataSources = new HashMap<>();
         // Enum 을 사용하는 게 더 좋습니다.
@@ -47,8 +46,8 @@ public class DataSourceConfiguration {
         return DataSourceBuilder.create()
                 .driverClassName(driverClassName)
                 .url(url)
-                .username(secretDataDTO.getAccount().getDatabase().getUsername())
-                .password(secretDataDTO.getAccount().getDatabase().getPassword())
+                .username(secretAccountDataDTO.getDatabase().getUsername())
+                .password(secretAccountDataDTO.getDatabase().getPassword())
                 .build();
     }
 }

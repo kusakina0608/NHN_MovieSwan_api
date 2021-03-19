@@ -2,7 +2,7 @@ package com.nhn.rookie8.movieswanmemberapi.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.nhn.rookie8.movieswanmemberapi.dto.SecretDataDTO;
+import com.nhn.rookie8.movieswanmemberapi.dto.SecretAccountDataDTO;
 import com.nhn.rookie8.movieswanmemberapi.dto.SecretKeyManagerDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +15,14 @@ import org.springframework.web.client.RestTemplate;
 @Order(value=1)
 public class SpringConfiguration {
 
-    @Value("${SKMUrl}")
-    private String url;
+    @Value("${SKM.Url}")
+    private String SKMurl;
+
+    @Value("${SKM.appkey}")
+    private String appKey;
+
+    @Value("${SKM.keyid}")
+    private String keyId;
 
     @Bean
     public RestTemplate restTemplate(){
@@ -30,13 +36,15 @@ public class SpringConfiguration {
 
     @Bean
     @DependsOn({"restTemplate","objectMapper"})
-    public SecretDataDTO databaseInfoDTO() throws Exception{
+    public SecretAccountDataDTO databaseInfoDTO() throws Exception{
 
         RestTemplate restTemplate = restTemplate();
         ObjectMapper objectMapper = objectMapper();
 
-        SecretKeyManagerDTO secretKeyManagerDTO = restTemplate.getForObject(url, SecretKeyManagerDTO.class);
+        SecretKeyManagerDTO secretKeyManagerDTO =
+                restTemplate.getForObject(SKMurl.replace("{appkey}",appKey).replace("{keyid}",keyId)
+                        , SecretKeyManagerDTO.class);
 
-        return objectMapper.readValue(secretKeyManagerDTO.getBody().getSecret(),SecretDataDTO.class);
+        return objectMapper.readValue(secretKeyManagerDTO.getBody().getSecret(), SecretAccountDataDTO.class);
     }
 }
