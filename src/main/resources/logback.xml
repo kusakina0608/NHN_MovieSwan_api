@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProfile name="dev">
+        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>INFO</level>
+            </filter>
+            <encoder>
+                <pattern>%highlight(%date{yyyy-MM-dd HH:mm:ss} [%-5level]\(%class:%line\) %msg%n)</pattern>
+            </encoder>
+        </appender>
+
+        <!-- AsyncAppender로 되어있는 것을 확인 -->
+        <appender name="user-logger" class="ch.qos.logback.classic.AsyncAppender">
+
+            <!-- Logback의 AsyncAppender 옵션 -->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>ERROR</level>
+            </filter>
+            <param name="includeCallerData" value="false" />
+            <param name="queueSize" value="2048" />
+            <param name="neverBlock" value="true" />
+            <param name="maxFlushTime" value="60000" />
+
+            <!-- Log & Crash Logback SDK의 LogNCrashHttpAppender 옵션 -->
+            <appender name="logNCrashHttp" class="com.toast.java.logncrash.logback.LogNCrashHttpAppender">
+                <param name="collectorUrl" value="http://api-logncrash.cloud.toast.com" />
+                <param name="appKey" value="A0HQY2MZfKwJ2hri" />
+                <param name="logSource" value="MovieSwan" />
+                <param name="version" value="1.0.0" />
+                <param name="logType" value="dev" />
+                <param name="debug" value="false" />
+            </appender>
+        </appender>
+
+        <!-- 프로젝트의 로그 -->
+        <logger name="com.nhn.rookie8.movieswanmemberapi" level="INFO">
+            <appender-ref ref="user-logger" />
+            <appender-ref ref="console" />
+        </logger>
+    </springProfile>
+
+    <springProfile name="real">
+        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>INFO</level>
+            </filter>
+            <encoder>
+                <pattern>%highlight(%date{yyyy-MM-dd HH:mm:ss} [%-5level]\(%class:%line\) %msg%n)</pattern>
+            </encoder>
+        </appender>
+
+        <!-- AsyncAppender로 되어있는 것을 확인 -->
+        <appender name="user-logger" class="ch.qos.logback.classic.AsyncAppender">
+
+            <!-- Logback의 AsyncAppender 옵션 -->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>ERROR</level>
+            </filter>
+            <param name="includeCallerData" value="false" />
+            <param name="queueSize" value="2048" />
+            <param name="neverBlock" value="true" />
+            <param name="maxFlushTime" value="60000" />
+
+            <!-- Log & Crash Logback SDK의 LogNCrashHttpAppender 옵션 -->
+            <appender name="logNCrashHttp" class="com.toast.java.logncrash.logback.LogNCrashHttpAppender">
+                <param name="collectorUrl" value="http://api-logncrash.cloud.toast.com" />
+                <param name="appKey" value="PmsWBf9iSseYJYfB" />
+                <param name="logSource" value="MovieSwan" />
+                <param name="version" value="1.0.0" />
+                <param name="logType" value="real" />
+                <param name="debug" value="false" />
+            </appender>
+        </appender>
+
+        <!-- 프로젝트의 로그 -->
+        <logger name="com.nhn.rookie8.movieswanmemberapi" level="INFO">
+            <appender-ref ref="user-logger" />
+            <appender-ref ref="console" />
+        </logger>
+    </springProfile>
+</configuration>
