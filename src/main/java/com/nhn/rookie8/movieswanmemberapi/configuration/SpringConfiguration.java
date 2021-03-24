@@ -36,7 +36,7 @@ public class SpringConfiguration {
 
     @Bean
     @DependsOn({"restTemplate","objectMapper"})
-    public SecretAccountDataDTO databaseInfoDTO() throws Exception{
+    public SecretAccountDataDTO secretAccountDataDTO() throws Exception{
 
         RestTemplate restTemplate = restTemplate();
         ObjectMapper objectMapper = objectMapper();
