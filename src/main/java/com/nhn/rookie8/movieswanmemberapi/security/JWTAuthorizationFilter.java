@@ -1,11 +1,15 @@
 package com.nhn.rookie8.movieswanmemberapi.security;
 
+import com.nhn.rookie8.movieswanmemberapi.dto.SecretAccountDataDTO;
 import io.jsonwebtoken.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +18,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     private final String HEADER = "Authorization";
-    private final String SECRET = "mySecretKey";
+    private final SecretAccountDataDTO databaseInfoDTO;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -46,7 +51,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     // jwt 에 대한 명세 파악이 부족했음...
     private Claims validateToken(HttpServletRequest request) {
         String jwtToken = request.getHeader(HEADER);
-        return Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
+        return Jwts.parser().setSigningKey(databaseInfoDTO.getSecretKey().getBytes()).parseClaimsJws(jwtToken).getBody();
     }
 
     private void setUpSpringAuthentication(Claims claims) {

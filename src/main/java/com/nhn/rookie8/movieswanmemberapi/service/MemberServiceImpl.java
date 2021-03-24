@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,6 +36,10 @@ public class MemberServiceImpl implements MemberService {
 
     private final DatabaseSelector databaseSelector;
 
+    private final PasswordEncoder passwordEncoder;
+
+    private final SecretAccountDataDTO databaseInfoDTO;
+
     @Value("${redirectUrl}")
     String redirectUrl;
 
@@ -50,7 +55,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public String getToken(String memberId) {
-        String secretKey = "mySecretKey";
+        String secretKey = databaseInfoDTO.getSecretKey();
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
                 .commaSeparatedStringToAuthorityList("MEMBER");
 
@@ -82,7 +87,7 @@ public class MemberServiceImpl implements MemberService {
                 dtoToEntity(
                         MemberDTO.builder()
                                 .memberId(dto.getMemberId())
-                                .password(dto.getPassword())
+                                .password(passwordEncoder.encode(dto.getPassword()))
                                 .name(dto.getName())
                                 .email(dto.getEmail())
                                 .url(dto.getUrl())
@@ -114,7 +119,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberIdNameDTO externalAuthenticate(MemberAuthDTO request){
         databaseSelector.indicateDB(request.getMemberId());
         return memberRepository.findById(request.getMemberId())
-                .filter(member -> member.getPassword().equals(request.getPassword()))
+                .filter(member -> passwordEncoder.matches(request.getPassword(), member.getPassword()))
                 .map(this::entityToMemberIdNameDto).orElseThrow(UnauthorizedException::new);
     }
 
