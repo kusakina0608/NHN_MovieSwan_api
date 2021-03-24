@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     private final String HEADER = "Authorization";
-    private final SecretAccountDataDTO databaseInfoDTO;
+    private final SecretAccountDataDTO secretAccountDataDTO;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -51,7 +51,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     // jwt 에 대한 명세 파악이 부족했음...
     private Claims validateToken(HttpServletRequest request) {
         String jwtToken = request.getHeader(HEADER);
-        return Jwts.parser().setSigningKey(databaseInfoDTO.getSecretKey().getBytes()).parseClaimsJws(jwtToken).getBody();
+        return Jwts.parser().setSigningKey(secretAccountDataDTO.getSecretKey().getBytes()).parseClaimsJws(jwtToken).getBody();
     }
 
     private void setUpSpringAuthentication(Claims claims) {
